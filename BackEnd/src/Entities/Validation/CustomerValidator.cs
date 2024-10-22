@@ -1,6 +1,6 @@
 using FluentValidation;
 
-namespace Api.Models.Validation
+namespace Api.Entities.Validation
 {
     public class CustomerValidator : AbstractValidator<Customer>
     {

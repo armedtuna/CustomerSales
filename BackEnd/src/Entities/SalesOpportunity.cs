@@ -1,4 +1,4 @@
-namespace Api.Models
+namespace Api.Entities
 {
     // todo-at: should this be a `record` instead of a class?
     public class SalesOpportunity

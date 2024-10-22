@@ -1,9 +1,9 @@
-using Api.Models;
-using Api.Models.Validation;
+using Api.Entities.Validation;
+using Api.Entities;
 using FluentAssertions;
 
 // todo-at: why is rider complaining about this? api.csproj is similar in style AFAICT
-namespace Tests.Models.Validation
+namespace Tests.Entities.Validation
 {
     public class SalesOpportunityTests
     {

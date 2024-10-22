@@ -1,6 +1,6 @@
-// todo-at: should swagger be considered?
+// todo-at: test swagger?
 // todo-at: should xml code comments be added? also could / would the swagger use that?
-namespace Api.Models
+namespace Api.Entities
 {
     // todo-at: should this be a `record` instead of a class?
     public class Customer
