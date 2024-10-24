@@ -30,6 +30,7 @@ public class CustomersDataProvider : ICustomersDataProvider
     }
 
     // todo-at: extract to new class?
+    // todo-at: tests
     private static Customer[] FilterCustomers(Customer[] customers, Dictionary<string, string> filterFields)
     {
         foreach (KeyValuePair<string, string> filterField in filterFields)
@@ -39,7 +40,8 @@ public class CustomersDataProvider : ICustomersDataProvider
                 "name" => customers
                     .Where(customer => customer.Name.Contains(filterField.Value))
                     .ToArray(),
-                "status" => customers
+                "status" =>
+                    customers
                         // todo-at: test that the enum works properly here with to-string
                         // - if UI is translated to another language, then what would happen?
                         //   - that seems to imply that UI should send a number instead?
@@ -53,17 +55,20 @@ public class CustomersDataProvider : ICustomersDataProvider
     }
 
     // todo-at: extract to new class?
+    // todo-at: tests
     private static Customer[] SortCustomers(Customer[] customers, Dictionary<string, string> sortFields)
     {
-        foreach (KeyValuePair<string, string> filterField in sortFields)
+        foreach (KeyValuePair<string, string> sortField in sortFields)
         {
-            customers = filterField.Key switch
+            customers = sortField.Key switch
             {
                 // todo-at: there's a problem here, since the field is optional... will it be required to choose `asc` or `desc`?
-                "name" => filterField.Value == "desc"
+                // todo-at: logical bug here: a `desc` value will never get here... dictionary is sending something else...
+                // todo-at: should there be an enum for asc, desc?
+                "name" => sortField.Value == "desc"
                     ? customers.OrderByDescending(customer => customer.Name).ToArray()
                     : customers.OrderBy(customer => customer.Name).ToArray(),
-                "status" => filterField.Value == "desc"
+                "status" => sortField.Value == "desc"
                     ? customers.OrderByDescending(customer => customer.Status).ToArray()
                     : customers.OrderBy(customer => customer.Status).ToArray(),
                 _ => customers

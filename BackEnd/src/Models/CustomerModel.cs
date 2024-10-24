@@ -1,7 +1,6 @@
 using Api.Data.Provider;
 using Api.Entities;
 
-// todo-at: find all of the capitalized `API` and ensure it's all consistent as `Api`
 namespace Api.Models
 {
     public class CustomerModel : ICustomerModel
@@ -10,30 +9,31 @@ namespace Api.Models
 
         public static ICustomerModel Instance => new CustomerModel();
 
-        public Customer[] RetrieveCustomers(string? filterName, CustomerStatusEnum? filterStatus, string? sortName,
-            CustomerStatusEnum? sortStatus)
+        public Customer[] RetrieveCustomers(string? filterName, string? filterStatus, string? sortName,
+            string? sortStatus)
         {
             Dictionary<string, string> filterFields = new();
             if (!string.IsNullOrWhiteSpace(filterName))
             {
                 filterFields.Add("name", filterName);
             }
-            
-            if (filterStatus != null)
+
+            // a blank status filter is simplest to ignore (and thus include all statuses).
+            if (!string.IsNullOrWhiteSpace(filterStatus))
             {
                 // todo-at: refine this a bit more... maybe it can be more elegant / enum-like? different dictionary value type
-                filterFields.Add("status", filterStatus.ToString());
+                filterFields.Add("status", filterStatus);
             }
             
             Dictionary<string, string> sortFields = new();
-            if (!string.IsNullOrWhiteSpace(sortName))
+            if (sortName != null)
             {
                 sortFields.Add("name", sortName);
             }
 
             if (sortStatus != null)
             {
-                sortFields.Add("status", sortStatus.ToString());
+                sortFields.Add("status", sortStatus);
             }
 
             return _customersDataProvider.RetrieveCustomers(filterFields, sortFields);

@@ -39,6 +39,10 @@ namespace Api.Data.Raw
 
         private static Customer BuildCustomer(CustomerStatusEnum status, string name, string email,
             string phoneNumber) =>
+            BuildCustomer(status.ToString(), name, email, phoneNumber);
+
+        private static Customer BuildCustomer(string status, string name, string email,
+            string phoneNumber) =>
             new()
             {
                 Status = status,

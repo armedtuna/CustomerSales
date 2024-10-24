@@ -1,12 +1,18 @@
-// todo-at: test swagger?
 // todo-at: should xml code comments be added? also could / would the swagger use that?
 namespace Api.Entities
 {
     // todo-at: should this be a `record` instead of a class?
     public class Customer
     {
+        private CustomerStatusEnum _status;
+        
         public Guid CustomerId { get; set; } // todo-at: should there a set here? or should the ctor handle this?
-        public CustomerStatusEnum Status { get; set; }
+
+        public string Status
+        {
+            get => _status.ToString();
+            set => _status = (CustomerStatusEnum)Enum.Parse(typeof(CustomerStatusEnum), value);
+        }
         public DateTime UtcCreatedAt { get; set; }
         public string Name { get; set; }
         public string? Email { get; set; }
@@ -21,7 +27,7 @@ namespace Api.Entities
         {
             // todo-at: test how this works with deserialization
             CustomerId = Guid.NewGuid();
-            Status = CustomerStatusEnum.Unknown;
+            _status = CustomerStatusEnum.Unknown;
             UtcCreatedAt = DateTime.UtcNow;
             Name = string.Empty;
             SalesOpportunities = [];

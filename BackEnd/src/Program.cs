@@ -4,6 +4,7 @@
 
 using Api.Data.Raw;
 using Api.Entities;
+using Api.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
 
 var app = builder.Build();
 
@@ -19,19 +22,26 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
 
 SetUpRoutes(app);
 
+app.UseStaticFiles();
+app.UseAntiforgery();
+
 app.Run();
 return;
 
 void SetUpRoutes(WebApplication webApplication)
 {
-    // todo-at: how to do nested routes, for example /customersales/somethingelse
-    webApplication.MapGet("/customersales/dumpjson", () =>
+    const string customerSalesRoot = "/customersales";
+    
+    webApplication.MapGet($"{customerSalesRoot}/dumpjson", () =>
         {
             Customer[] customers = SampleData.BuildSampleData();
             Api.Models.CustomerModel.Instance.StoreCustomers(customers);
@@ -39,14 +49,19 @@ void SetUpRoutes(WebApplication webApplication)
         .WithName("GetCustomerSalesDumpJson")
         .WithOpenApi();
 
-    webApplication.MapGet("/customersales/readdumpjson",
-            Customer[] (string? filterName, CustomerStatusEnum? filterStatus, string? sortName,
-                CustomerStatusEnum? sortStatus) =>
+    webApplication.MapGet($"{customerSalesRoot}/customers",
+            Customer[] (string? filterName, string? filterStatus, string? sortName, string? sortStatus) =>
             {
                 Customer[] customers =
                     Api.Models.CustomerModel.Instance.RetrieveCustomers(filterName, filterStatus, sortName, sortStatus);
                 return customers;
             })
-        .WithName("GetCustomerSalesReadDumpJson")
+        .WithName("GetCustomerSalesReadCustomers")
+        .WithOpenApi();
+
+    webApplication.MapGet($"{customerSalesRoot}/statuses",
+            string[] () =>
+                CustomerStatusModel.Instance.RetrieveCustomerStatuses())
+        .WithName("GetCustomerSalesCustomerStatuses")
         .WithOpenApi();
 }
