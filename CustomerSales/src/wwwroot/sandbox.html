@@ -25,9 +25,6 @@ function Greeting({ name }) {
 
 // lots learned from: https://www.freecodecamp.org/news/how-to-consume-rest-apis-in-react/
 
-// todo-at: should these be in state?
-let sortNameOrderAscending = true
-let sortStatusOrderAscending = true
 let customerStatuses = []
 let App = function App() {
   const baseDataUrl = 'http://localhost:5056/customersales/'
@@ -37,50 +34,38 @@ let App = function App() {
   }
 
   const [customers, setCustomers] = useState([])
+  const [nameSort, setNameSort] = useState([])
+  const [statusSort, setStatusSort] = useState([])
   const [nameFilter, setNameFilter] = useState([])
   const [statusFilter, setStatusFilter] = useState([])
   useEffect(() => {
-    fetchJson(dataUrls.customers, (customers) => {
-      setCustomers(customers)
-    })
+    refreshCustomers()
     fetchJson(dataUrls.customerStatuses, (statuses) => {
       customerStatuses = statuses
     })
   }, [])
 
-  const filterBy = async () => {
-    let filterDataUrl = `${dataUrls.customers}?`
-    console.log(filterDataUrl)
+  const refreshCustomers = async () => {
+    // todo-at: extract a method to build urls?
+    let dataUrl = `${dataUrls.customers}?`
     if (`${nameFilter}`) {
-      filterDataUrl += `&filterName=${nameFilter}`
-      console.log(filterDataUrl)
+      dataUrl += `&filterName=${nameFilter}`
     }
 
     if (`${statusFilter}`) {
-      filterDataUrl += `&filterStatus=${statusFilter}`
-      console.log(filterDataUrl)
+      dataUrl += `&filterStatus=${statusFilter}`
     }
-    await fetchJson(filterDataUrl, (customers) => {
-      setCustomers(customers)
-    })
-  }
 
-  const sortBy = async (column) => {
-    // todo-at: extract a method to build urls?
-    let sortDataUrl
-    switch (column) {
-      case "name":
-        sortDataUrl = `${dataUrls.customers}?sortName=${sortNameOrderAscending ? 'asc' : 'desc'}`
-        console.log(sortNameOrderAscending)
-        sortNameOrderAscending = !sortNameOrderAscending
-        console.log(sortNameOrderAscending)
-        break
-      case "status":
-        sortDataUrl = `${dataUrls.customers}?sortStatus=${sortStatusOrderAscending ? 'asc' : 'desc'}`
-        sortStatusOrderAscending = !sortStatusOrderAscending
-        break
+    if (`${nameSort}`) {
+      dataUrl += `&sortName=${nameSort}`
     }
-    await fetchJson(sortDataUrl, (customers) => {
+    
+    if (`${statusSort}`) {
+      dataUrl += `&sortStatus=${statusSort}`
+    }
+
+    console.log(dataUrl)
+    await fetchJson(dataUrl, (customers) => {
       setCustomers(customers)
     })
   }
@@ -96,6 +81,33 @@ let App = function App() {
               console.log(err.message)
             })
   }
+  
+  const toggleNameSort = () => {
+    if (`${nameSort}` === 'desc') {
+      setNameSort('asc')
+    } else {
+      setNameSort('desc')
+    }
+    
+    return refreshCustomers()
+  }
+
+  const toggleStatusSort = () => {
+    if (`${statusSort}` === 'desc') {
+      setStatusSort('asc')
+    } else {
+      setStatusSort('desc')
+    }
+
+    return refreshCustomers()
+  }
+  
+  const clearSort = () => {
+    setNameSort('')
+    setStatusSort('')
+
+    return refreshCustomers()
+  }
 
   return (
           // todo-at: status should be a dropdown
@@ -103,11 +115,11 @@ let App = function App() {
             <thead>
             <tr>
               <td>
-                <div onClick={() => sortBy("name")}>Name</div>
+                <div onClick={() => toggleNameSort()}>Name</div>
                 <div><input id="filterName" type="text" onChange={(e) => setNameFilter(e.target.value)}/></div>
               </td>
               <td>
-                <div onClick={() => sortBy("status")}>Status</div>
+                <div onClick={() => toggleStatusSort()}>Status</div>
                 <div>
                   <select id="filterStatus" onChange={(e) => setStatusFilter(e.target.value)}>
                     {customerStatuses.map((status) => {
@@ -119,7 +131,8 @@ let App = function App() {
                 </div>
               </td>
               <td>
-                <button type="button" onClick={() => filterBy()}>Filter</button>
+                <button type="button" onClick={() => clearSort()}>Clear Sort</button>
+                <button type="button" onClick={() => refreshCustomers()}>Filter</button>
               </td>
             </tr>
             </thead>
