@@ -33,6 +33,16 @@ namespace Api.Data.Raw
                 // todo-at: is there a more appropriate / specific exception type?
                 throw new Exception($"Customer JSON deserialization failed, path: '${DataFilePath}'");
             }
+
+            // todo-at: remove this when done testing
+            customers[0].SalesOpportunities =
+            [
+                new SalesOpportunity()
+                {
+                    SalesOpportunityId = Guid.NewGuid(),
+                    Name = "One"
+                }
+            ];
             
             return customers;
         }

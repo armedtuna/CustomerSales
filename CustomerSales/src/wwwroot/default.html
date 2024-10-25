@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="root"></div>
+</body>
+<!-- This setup is not suitable for production. -->
+<!-- Only use it in development! -->
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script async src="https://ga.jspm.io/npm:es-module-shims@1.7.0/dist/es-module-shims.js"></script>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react?dev",
+    "react-dom/client": "https://esm.sh/react-dom/client?dev"
+  }
+}
+</script>
+<script type="text/babel" data-type="module">
+import React, { StrictMode, useState, useEffect } from 'react'
+import { createRoot } from 'react-dom/client'
+
+// todo-at: tried to split the components into separate .js files, but kept getting a runtime error with '<'
+
+function CustomerDetails({ customerId }) {
+  // todo-at: centralize this config?
+  const baseDataUrl = 'http://localhost:5056/customersales/'
+  const dataUrls = {
+    customers: `${baseDataUrl}customers`,
+    customerStatuses: `${baseDataUrl}statuses`
+  }
+  const [customer, setCustomer] = useState({})
+  useEffect(() => {
+    refreshCustomer(customerId)
+  }, [])
+  
+  const refreshCustomer = async () => {
+    // todo-at: extract a method to build urls?
+    let dataUrl = `${dataUrls.customers}/${customerId}`
+    console.log(dataUrl)
+    await fetchJson(dataUrl, (customer) => {
+      setCustomer(customer)
+    })
+  }
+  
+  return (
+          <>
+            <p>{new Date().toLocaleTimeString()}</p>
+            <h1>H1: '{customer.name}'</h1>
+            <p>Paragraph...</p>
+          </>
+  )
+}
+
+function CustomersList() {
+  const baseDataUrl = 'http://localhost:5056/customersales/'
+  const dataUrls = {
+    customers: `${baseDataUrl}customers`,
+    customerStatuses: `${baseDataUrl}statuses`
+  }
+
+  const [customers, setCustomers] = useState([])
+  const [customerStatuses, setCustomerStatuses] = useState([])
+  const [nameSort, setNameSort] = useState('')
+  const [statusSort, setStatusSort] = useState('')
+  const [nameFilter, setNameFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState('')
+  const [showCustomerDetails, setShowCustomerDetails] = useState({})
+  const [showDetails, setShowDetails] = useState({})
+  const [simpleShowDetails, setSimpleShowDetails] = useState(false)
+  useEffect(() => {
+    fetchJson(dataUrls.customerStatuses, (statuses) => {
+      setCustomerStatuses(statuses)
+    })
+    refreshCustomers()
+  }, [])
+
+  const refreshCustomers = async () => {
+    // todo-at: extract a method to build urls?
+    let dataUrl = `${dataUrls.customers}?`
+    if (`${nameFilter}`) {
+      dataUrl += `&filterName=${nameFilter}`
+    }
+
+    if (`${statusFilter}`) {
+      dataUrl += `&filterStatus=${statusFilter}`
+    }
+
+    if (`${nameSort}`) {
+      dataUrl += `&sortName=${nameSort}`
+    }
+
+    if (`${statusSort}`) {
+      dataUrl += `&sortStatus=${statusSort}`
+    }
+
+    console.log(dataUrl)
+    await fetchJson(dataUrl, (customers) => {
+      setCustomers(customers)
+    })
+  }
+
+  const toggleNameSort = () => {
+    if (`${nameSort}` === 'desc') {
+      setNameSort('asc')
+    } else {
+      setNameSort('desc')
+    }
+
+    return refreshCustomers()
+  }
+
+  const toggleStatusSort = () => {
+    if (`${statusSort}` === 'desc') {
+      setStatusSort('asc')
+    } else {
+      setStatusSort('desc')
+    }
+
+    return refreshCustomers()
+  }
+
+  const clearSort = () => {
+    setNameSort('')
+    setStatusSort('')
+
+    return refreshCustomers()
+  }
+
+  return (
+          <>
+            <table className="styled-table">
+              <thead>
+              <tr>
+                <td>
+                  <div onClick={() => toggleNameSort()}>Name</div>
+                  <div><input id="filterName" type="text" onChange={(e) => setNameFilter(e.target.value)} /></div>
+                </td>
+                <td>
+                  <div onClick={() => toggleStatusSort()}>Status</div>
+                  <div>
+                    <select id="filterStatus" onChange={(e) => setStatusFilter(e.target.value)}>
+                      {customerStatuses.map((status) => {
+                        return (
+                                <option>{status}</option>
+                        )
+                      })}
+                    </select>
+                  </div>
+                </td>
+                <td>
+                  <button type="button" onClick={() => clearSort()}>Clear Sort</button>
+                  <button type="button" onClick={() => refreshCustomers()}>Filter</button>
+                </td>
+              </tr>
+              </thead>
+              <tbody>
+              {customers.map((customer) => {
+                const toggleShowDetails = (customerId) => {
+                  setSimpleShowDetails(!simpleShowDetails)
+
+                  const show = showDetails[customerId]
+                  showDetails[`${customerId}`] = !!!show
+                  setShowDetails(showDetails)
+                }
+
+                return (
+                        <>
+                          <tr onClick={() => toggleShowDetails(customer.customerId)}>
+                            <CustomerView customer={customer}/>
+                          </tr>
+                          {showDetails[customer.customerId]
+                                  ? <CustomerEdit customer={customer} customerStatuses={customerStatuses}/>
+                                  : null
+                          }
+                        </>
+                )
+              })}
+              </tbody>
+            </table>
+          </>
+  )
+}
+
+function CustomerView({ customer }) {
+  return (
+          <>
+            <td>{customer.name}</td>
+            <td>{customer.status}</td>
+          </>
+  )
+}
+
+function CustomerEdit({customer, customerStatuses}) {
+  const [modifiedCustomer, setmodifiedCustomer] = useState({})
+  const [modifiedOpportunity, setModifiedOpportunity] = useState({})
+
+  const changeStatus = (status) => {
+    modifiedCustomer.status = status
+    setmodifiedCustomer(modifiedCustomer)
+  }
+
+  const changeOpportunity = (opportunity) => {
+    // todo-at: test adding new opportunity
+    const matchingOpportunity = customer.salesOpportunities?.find((o) =>
+            o.salesOpportunityId === opportunity)
+    modifiedOpportunity.saleOpportunityId = opportunity
+    modifiedOpportunity.name = matchingOpportunity?.name
+
+    setModifiedOpportunity(modifiedOpportunity)
+    // todo-at: figure out how to pre-populate the input / text box value?
+    console.log(modifiedOpportunity)
+  }
+
+  const saveCustomer = (e) => {
+    console.log(modifiedCustomer)
+  }
+
+  //console.log(customer)
+
+  // todo-at: try this shorter version:
+  // <select id="opportunities" onChange={(e) => changeOpportunity(e.target.value)}>
+  // <select id="opportunities" onChange={changeOpportunity>
+  // see here: https://upmostly.com/tutorials/react-onchange-events-with-examples
+  return (
+          <tr>
+            <td>
+              <select id="status" onChange={(e) => changeStatus(e.target.value)}>
+                {customerStatuses.map((status) => {
+                  //console.log(`${status} === ${customer.status}: ${status === customer.status}`)
+                  return (
+                          <option selected={status === customer.status ? "selected" : null}>{status}</option>
+                  )
+                })}
+              </select>
+            </td>
+            <td>
+              <select id="opportunities" onChange={(e) => changeOpportunity(e.target.value)}>
+                <option value="">Add Opportunity</option>
+                {customer.salesOpportunities?.map((opportunity) => {
+                  return (
+                          <option value={opportunity.salesOpportunityId}>{opportunity.name}</option>
+                  )
+                })}
+              </select>
+              <input type="text" value={modifiedOpportunity.name}></input>
+            </td>
+            <td>
+              <button type="button" onClick={(e) => saveCustomer(e)}>Save</button>
+            </td>
+          </tr>
+  )
+}
+
+const fetchJson = async (url, onFetched) => {
+  await fetch(url)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+            onFetched(data)
+          })
+          .catch((err) => {
+            console.log(err.message)
+          })
+}
+
+function App() {
+  return (
+          <>
+            <CustomersList/>
+          </>
+  )
+}
+
+// lots learned from: https://www.freecodecamp.org/news/how-to-consume-rest-apis-in-react/
+
+// todo-at: extract css to file?
+const root = createRoot(document.getElementById('root'));
+root.render(
+  <StrictMode>
+    <div>
+      <App />
+    </div>
+  </StrictMode>
+);
+</script>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: sans-serif;
+  margin: 20px;
+  padding: 0;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 22px;
+}
+
+h2 {
+  margin-top: 0;
+  font-size: 20px;
+}
+
+h3 {
+  margin-top: 0;
+  font-size: 18px;
+}
+
+h4 {
+  margin-top: 0;
+  font-size: 16px;
+}
+
+h5 {
+  margin-top: 0;
+  font-size: 14px;
+}
+
+h6 {
+  margin-top: 0;
+  font-size: 12px;
+}
+
+code {
+  font-size: 1.2em;
+}
+
+ul {
+  padding-inline-start: 20px;
+}
+
+/* CSS from: https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l */
+.styled-table {
+  border-collapse: collapse;
+  margin: 25px 0;
+  font-size: 0.9em;
+  font-family: sans-serif;
+  min-width: 400px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.styled-table thead tr {
+  background-color: #009879;
+  color: #ffffff;
+  text-align: left;
+}
+
+.styled-table th,
+.styled-table td {
+  padding: 12px 15px;
+}
+
+.styled-table tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+
+.styled-table tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+
+.styled-table tbody tr:last-of-type {
+  border-bottom: 2px solid #009879;
+}
+
+.styled-table tbody tr.active-row {
+  font-weight: bold;
+  color: #009879;
+}
+
+</style>
+</html>

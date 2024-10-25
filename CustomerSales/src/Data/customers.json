@@ -1,7 +1,7 @@
 [
   {
     "CustomerId": "60f759f9-3c04-49a2-8ff4-373d8b5fcf1a",
-    "Status": 1,
+    "Status": "Active",
     "UtcCreatedAt": "2024-10-21T22:12:13.996196Z",
     "Name": "Aelinos Cicele",
     "Email": "aelinos@mail.com",
@@ -10,7 +10,7 @@
   },
   {
     "CustomerId": "ec167737-2147-4eb8-be59-1aafc09fafa6",
-    "Status": 1,
+    "Status": "Active",
     "UtcCreatedAt": "2024-10-21T22:12:13.996197Z",
     "Name": "Contanc Herrion",
     "Email": "contanc@herrion.com",
@@ -19,7 +19,7 @@
   },
   {
     "CustomerId": "18e47aff-72de-4849-a186-f0607befc2fa",
-    "Status": 3,
+    "Status": "Lead",
     "UtcCreatedAt": "2024-10-21T22:12:13.996198Z",
     "Name": "Jennia Orthek",
     "Email": "jort@email.com",
@@ -28,7 +28,7 @@
   },
   {
     "CustomerId": "cea5951f-9aa6-4002-8376-2351dbe27728",
-    "Status": 1,
+    "Status": "Active",
     "UtcCreatedAt": "2024-10-21T22:12:13.996198Z",
     "Name": "Prakrommir Wolum",
     "Email": "wolum.p@mail.com",
@@ -37,7 +37,7 @@
   },
   {
     "CustomerId": "191770ce-e40b-4424-851a-dcf6190aa9b0",
-    "Status": 2,
+    "Status": "NonActive",
     "UtcCreatedAt": "2024-10-21T22:12:13.996199Z",
     "Name": "Adami Edmundan",
     "Email": "na@nomail.com",

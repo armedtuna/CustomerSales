@@ -19,10 +19,6 @@
 import React, { StrictMode, useState, useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 
-function Greeting({ name }) {
-  return <h1>Hello, {name}</h1>;
-}
-
 // lots learned from: https://www.freecodecamp.org/news/how-to-consume-rest-apis-in-react/
 
 let customerStatuses = []
@@ -34,6 +30,7 @@ let App = function App() {
   }
 
   const [customers, setCustomers] = useState([])
+  const [customerStatuses, setCustomerStatuses] = useState([])
   const [nameSort, setNameSort] = useState([])
   const [statusSort, setStatusSort] = useState([])
   const [nameFilter, setNameFilter] = useState([])

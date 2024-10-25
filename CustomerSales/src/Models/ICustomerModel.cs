@@ -7,6 +7,8 @@ public interface ICustomerModel
     // todo-at: test how this responds for unit tests
     static abstract ICustomerModel Instance { get; }
 
+    Customer? RetrieveCustomer(Guid customerId);
+
     Customer[] RetrieveCustomers(string? filterName, string? filterStatus, string? sortName, string? sortStatus);
 
     void StoreCustomers(Customer[] customers);

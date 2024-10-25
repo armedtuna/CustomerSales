@@ -11,6 +11,12 @@ public class CustomersDataProvider : ICustomersDataProvider
     // todo-at: test this in a test to ensure that it's done correctly / can be overridden
     public static ICustomersDataProvider Instance => new CustomersDataProvider();
 
+    public Customer? RetrieveCustomer(Guid customerId)
+    {
+        Customer[] customers = SampleData.ReadSampleDataFromDisk();
+        return customers.FirstOrDefault(c => c.CustomerId == customerId);
+    }
+
     public Customer[] RetrieveCustomers(Dictionary<string, string>? filterFields,
         Dictionary<string, string>? sortFields)
     {

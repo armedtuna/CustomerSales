@@ -9,6 +9,11 @@ namespace Api.Models
 
         public static ICustomerModel Instance => new CustomerModel();
 
+        public Customer? RetrieveCustomer(Guid customerId)
+        {
+            return _customersDataProvider.RetrieveCustomer(customerId);
+        }
+
         public Customer[] RetrieveCustomers(string? filterName, string? filterStatus, string? sortName,
             string? sortStatus)
         {

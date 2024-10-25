@@ -31,6 +31,7 @@ app.UseHttpsRedirection();
 
 SetUpRoutes(app);
 
+// todo-at: figure out how to specify a default file, for default.html
 app.UseStaticFiles();
 app.UseAntiforgery();
 
@@ -44,7 +45,7 @@ void SetUpRoutes(WebApplication webApplication)
     webApplication.MapGet($"{customerSalesRoot}/dumpjson", () =>
         {
             Customer[] customers = SampleData.BuildSampleData();
-            Api.Models.CustomerModel.Instance.StoreCustomers(customers);
+            CustomerModel.Instance.StoreCustomers(customers);
         })
         .WithName("GetCustomerSalesDumpJson")
         .WithOpenApi();
@@ -53,10 +54,17 @@ void SetUpRoutes(WebApplication webApplication)
             Customer[] (string? filterName, string? filterStatus, string? sortName, string? sortStatus) =>
             {
                 Customer[] customers =
-                    Api.Models.CustomerModel.Instance.RetrieveCustomers(filterName, filterStatus, sortName, sortStatus);
+                    CustomerModel.Instance.RetrieveCustomers(filterName, filterStatus, sortName, sortStatus);
                 return customers;
             })
         .WithName("GetCustomerSalesReadCustomers")
+        .WithOpenApi();
+
+    // todo-at: is currently used? or is the data just obtained from the full list?
+    webApplication.MapGet($"{customerSalesRoot}/customers/{{customerId}}",
+            Customer? (Guid customerId) =>
+                CustomerModel.Instance.RetrieveCustomer(customerId))
+        .WithName("GetCustomerSalesReadCustomer")
         .WithOpenApi();
 
     webApplication.MapGet($"{customerSalesRoot}/statuses",
