@@ -31,7 +31,7 @@ namespace Tests.Entities.Validation
         {
             Customer customer = new()
             {
-                Status = status,
+                Status = status.ToString(),
                 Name = name,
                 Email = email,
                 PhoneNumber = phoneNumber

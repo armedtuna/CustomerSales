@@ -3,13 +3,16 @@ using Newtonsoft.Json;
 
 namespace Api.Data.Raw
 {
-    public class SampleData
+    public class SampleData : ISampleData
     {
         // todo-at: should the path be more specific, and not application root? root is probably a bit messy.
         private const string DataFilePath = "data/customers.json";
+        
+        public static ISampleData Instance { get; } = new SampleData();
 
-        public static Customer[] BuildSampleData() =>
+        public Customer[] BuildSampleData() =>
         [
+            // name data obtained online from a random name generator
             BuildCustomer(CustomerStatusEnum.Active, "Aelinos Cicele", "aelinos@mail.com", "1234"),
             BuildCustomer(CustomerStatusEnum.Active, "Contanc Herrion", "contanc@herrion.com", "0800CONTANC"),
             BuildCustomer(CustomerStatusEnum.Lead, "Jennia Orthek", "jort@email.com", "5908"),
@@ -17,14 +20,14 @@ namespace Api.Data.Raw
             BuildCustomer(CustomerStatusEnum.NonActive, "Adami Edmundan", "na@nomail.com", "5693")
         ];
 
-        public static void WriteSampleDataToDisk(Customer[] customers)
+        public void WriteSampleDataToDisk(Customer[] customers)
         {
             // indented formatting for demo only. if it was production, then at least we'd write using bytes instead.
             string customersJson = JsonConvert.SerializeObject(customers, Formatting.Indented);
             File.WriteAllText(DataFilePath, customersJson);
         }
 
-        public static Customer[] ReadSampleDataFromDisk()
+        public Customer[] ReadSampleDataFromDisk()
         {
             string customersJson = File.ReadAllText(DataFilePath);
             var customers = JsonConvert.DeserializeObject<Customer[]>(customersJson);

@@ -44,7 +44,7 @@ void SetUpRoutes(WebApplication webApplication)
     
     webApplication.MapGet($"{customerSalesRoot}/dumpjson", () =>
         {
-            Customer[] customers = SampleData.BuildSampleData();
+            Customer[] customers = SampleData.Instance.BuildSampleData();
             CustomerModel.Instance.StoreCustomers(customers);
         })
         .WithName("GetCustomerSalesDumpJson")

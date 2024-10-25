@@ -7,7 +7,8 @@ namespace Api.Entities.Validation
         public CustomerValidator()
         {
             RuleFor(x => x.CustomerId).NotEmpty();
-            RuleFor(x => x.Status).NotEmpty();
+            RuleFor(x => x.Status).NotEmpty()
+                .NotEqual(CustomerStatusEnum.Unknown.ToString());
             RuleFor(x => x.UtcCreatedAt).NotEmpty();
             RuleFor(x => x.Name).NotEmpty();
             // todo-at: confirm if this validation should be "at least one of" or "both of" email and phone number.

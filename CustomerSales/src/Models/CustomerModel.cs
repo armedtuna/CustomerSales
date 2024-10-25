@@ -17,6 +17,7 @@ namespace Api.Models
         public Customer[] RetrieveCustomers(string? filterName, string? filterStatus, string? sortName,
             string? sortStatus)
         {
+            // todo-at: should this be extracted to a method? and perhaps public? both test use, and testing?
             Dictionary<string, string> filterFields = new();
             if (!string.IsNullOrWhiteSpace(filterName))
             {
