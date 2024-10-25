@@ -19,8 +19,6 @@
 import React, { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
-// todo-at: tried to split the components into separate .js files, but kept getting a runtime error with '<'
-
 function CustomerDetails({ customerId }) {
   // todo-at: centralize this config?
   const baseDataUrl = 'http://localhost:5056/customersales/'
@@ -207,7 +205,6 @@ function CustomerEdit({customer, customerStatuses}) {
     modifiedOpportunity.name = matchingOpportunity?.name
 
     setModifiedOpportunity(modifiedOpportunity)
-    // todo-at: figure out how to pre-populate the input / text box value?
     console.log(modifiedOpportunity)
   }
 

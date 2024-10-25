@@ -12,7 +12,6 @@ public class TestSampleData : ISampleData
 
     public Customer[] ReadSampleDataFromDisk() =>
     [
-        // todo-at: consider changing the test data (so as to exercise more data scenarios)?
         BuildCustomer(CustomerStatusEnum.Active, "A1", "a1@mail.com", "1"),
         BuildCustomer(CustomerStatusEnum.Active, "Letter B", "letterb@herrion.com", "XYZ"),
         BuildCustomer(CustomerStatusEnum.Lead, "CCC", "ccc@email.com", "234"),

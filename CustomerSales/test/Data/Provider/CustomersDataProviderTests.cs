@@ -48,7 +48,6 @@ public class CustomersDataProviderTests
             .Should().BeEquivalentTo(expectedNamesSequence);
     }
     
-    // todo-at: test combined filtering and sorting
     [Theory]
     [InlineData("A", null, "asc", null, 1, new string[] { "A1" })]
     [InlineData("e", null, "desc", null, 2, new string[] { "Not Number But Letter D", "Letter B" })]
@@ -105,6 +104,4 @@ public class CustomersDataProviderTests
         
         return sortFields;
     }
-
-    // todo-at: can / should the sample test building be in this file?
 }

@@ -4,7 +4,6 @@ namespace Api.Models;
 
 public interface ICustomerModel
 {
-    // todo-at: test how this responds for unit tests
     static abstract ICustomerModel Instance { get; }
 
     Customer? RetrieveCustomer(Guid customerId);

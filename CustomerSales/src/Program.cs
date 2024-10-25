@@ -1,7 +1,3 @@
-// todo-at: which config files should be removed from `git` history?
-// - ideally these are never added, but at the moment i don't have any build server configs or indeed any secrets
-//   - there are ports, but these are possibly defaults... still maybe not great to be committed
-
 using Api.Data.Raw;
 using Api.Entities;
 using Api.Models;
@@ -31,7 +27,6 @@ app.UseHttpsRedirection();
 
 SetUpRoutes(app);
 
-// todo-at: figure out how to specify a default file, for default.html
 app.UseStaticFiles();
 app.UseAntiforgery();
 

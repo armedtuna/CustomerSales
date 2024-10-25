@@ -5,12 +5,8 @@ namespace Api.Data.Provider;
 
 public class CustomersDataProvider : ICustomersDataProvider
 {
-    // todo-at: dependency injection or the below static instance?
-    // - i think i prefer dependency injection,
-    // - but as long as the below can be overridden for tests then it's cheap and okay for the scope of this project
-    // todo-at: test this in a test to ensure that it's done correctly / can be overridden
     public static ICustomersDataProvider Instance => new CustomersDataProvider();
-    private ISampleData _sampleData;
+    private readonly ISampleData _sampleData;
 
     public CustomersDataProvider()
         : this(Raw.SampleData.Instance)
@@ -55,15 +51,11 @@ public class CustomersDataProvider : ICustomersDataProvider
         {
             customers = filterField.Key switch
             {
-                // todo-at: case-sensitivity?
                 "name" => customers
                     .Where(customer => customer.Name.Contains(filterField.Value))
                     .ToArray(),
                 "status" =>
                     customers
-                        // todo-at: test that the enum works properly here with to-string
-                        // - if UI is translated to another language, then what would happen?
-                        //   - that seems to imply that UI should send a number instead?
                     .Where(customer => customer.Status.ToString().Equals(filterField.Value))
                     .ToArray(),
                 _ => customers
@@ -81,8 +73,6 @@ public class CustomersDataProvider : ICustomersDataProvider
         {
             customers = sortField.Key switch
             {
-                // todo-at: should there be an enum for asc, desc?
-                // todo-at: case-sensitivity?
                 "name" => sortField.Value == "desc"
                     ? customers.OrderByDescending(customer => customer.Name).ToArray()
                     : customers.OrderBy(customer => customer.Name).ToArray(),

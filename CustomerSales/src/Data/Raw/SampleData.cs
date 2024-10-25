@@ -5,7 +5,6 @@ namespace Api.Data.Raw
 {
     public class SampleData : ISampleData
     {
-        // todo-at: should the path be more specific, and not application root? root is probably a bit messy.
         private const string DataFilePath = "data/customers.json";
         
         public static ISampleData Instance { get; } = new SampleData();
@@ -33,8 +32,7 @@ namespace Api.Data.Raw
             var customers = JsonConvert.DeserializeObject<Customer[]>(customersJson);
             if (customers == null)
             {
-                // todo-at: is there a more appropriate / specific exception type?
-                throw new Exception($"Customer JSON deserialization failed, path: '${DataFilePath}'");
+                throw new JsonSerializationException($"Customer JSON deserialization failed, path: '${DataFilePath}'");
             }
 
             // todo-at: remove this when done testing

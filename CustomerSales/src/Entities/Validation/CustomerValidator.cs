@@ -11,7 +11,6 @@ namespace Api.Entities.Validation
                 .NotEqual(CustomerStatusEnum.Unknown.ToString());
             RuleFor(x => x.UtcCreatedAt).NotEmpty();
             RuleFor(x => x.Name).NotEmpty();
-            // todo-at: confirm if this validation should be "at least one of" or "both of" email and phone number.
             RuleFor(x => x.Email).NotEmpty()
                 .When(x => string.IsNullOrEmpty(x.PhoneNumber));
             RuleFor(x => x.PhoneNumber).NotEmpty()

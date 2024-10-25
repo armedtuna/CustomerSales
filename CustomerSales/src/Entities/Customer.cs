@@ -1,12 +1,10 @@
-// todo-at: should xml code comments be added? also could / would the swagger use that?
 namespace Api.Entities
 {
-    // todo-at: should this be a `record` instead of a class?
-    public class Customer
+    public record Customer
     {
         private CustomerStatusEnum _status;
         
-        public Guid CustomerId { get; set; } // todo-at: should there a set here? or should the ctor handle this?
+        public Guid CustomerId { get; set; }
 
         public string Status
         {
@@ -25,7 +23,6 @@ namespace Api.Entities
 
         public Customer()
         {
-            // todo-at: test how this works with deserialization
             CustomerId = Guid.NewGuid();
             _status = CustomerStatusEnum.Unknown;
             UtcCreatedAt = DateTime.UtcNow;
