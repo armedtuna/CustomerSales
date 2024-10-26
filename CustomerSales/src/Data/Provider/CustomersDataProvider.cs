@@ -86,6 +86,55 @@ public class CustomersDataProvider : ICustomersDataProvider
         return customers;
     }
 
+    public bool? StoreCustomer(Customer customer)
+    {
+        Customer[] customers = _sampleData.ReadSampleDataFromDisk();
+        Customer? existingCustomer = customers.FirstOrDefault(c => c.CustomerId == customer.CustomerId);
+        if (existingCustomer == null)
+        {
+            customers = customers.Append(customer).ToArray();
+        }
+        else
+        {
+            existingCustomer.Status = customer.Status;
+            existingCustomer.UtcCreatedAt = customer.UtcCreatedAt;
+            existingCustomer.Name = customer.Name;
+            existingCustomer.Email = customer.Email;
+            existingCustomer.PhoneNumber = customer.PhoneNumber;
+            existingCustomer.SalesOpportunities = customer.SalesOpportunities;
+        }
+
+        StoreCustomers(customers);
+
+        return true;
+    }
+
+    // public bool? UpsertSalesOpportunity(Guid customerId, SalesOpportunity salesOpportunity)
+    // {
+    //     ValidationResult? validation = new SalesOpportunityValidator().Validate(salesOpportunity);
+    //     if (validation == null) throw new FluentValidation.ValidationException("Validation unavailable");
+    //     if (!validation.IsValid) throw new FluentValidation.ValidationException(string.Join(' ', validation.Errors));
+    //     
+    //     Customer? customer = RetrieveCustomer(customerId);
+    //     if (customer == null) throw new NullReferenceException($"Customer not found: '{customerId}'");
+    //
+    //     SalesOpportunity? existingOpportunity = customer.SalesOpportunities?.FirstOrDefault(x =>
+    //         x.SalesOpportunityId == salesOpportunity.SalesOpportunityId);
+    //     if (existingOpportunity == null)
+    //     {
+    //         customer.SalesOpportunities ??= new List<SalesOpportunity>();
+    //         customer.SalesOpportunities.Add(salesOpportunity);
+    //     }
+    //     else
+    //     {
+    //         existingOpportunity.Name = salesOpportunity.Name;
+    //     }
+    //
+    //     StoreCustomer(customer);
+    //
+    //     return true;
+    // }
+
     public void StoreCustomers(Customer[] customers)
     {
         _sampleData.WriteSampleDataToDisk(customers);

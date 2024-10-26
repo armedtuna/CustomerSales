@@ -1,5 +1,7 @@
 using Api.Data.Provider;
 using Api.Entities;
+using Api.Entities.Validation;
+using FluentValidation.Results;
 
 namespace Api.Models
 {
@@ -48,6 +50,41 @@ namespace Api.Models
         public void StoreCustomers(Customer[] customers)
         {
             _customersDataProvider.StoreCustomers(customers);
+        }
+
+        public bool? SaveCustomer(Customer customer)
+        {
+            ValidationResult? validation = new CustomerValidator().Validate(customer);
+            if (validation == null) throw new FluentValidation.ValidationException("Validation unavailable");
+            if (!validation.IsValid) throw new FluentValidation.ValidationException(string.Join(' ', validation.Errors));
+            
+            return _customersDataProvider.StoreCustomer(customer);
+        }
+
+        public bool? UpsertSalesOpportunity(Guid customerId, SalesOpportunity salesOpportunity)
+        {
+            ValidationResult? validation = new SalesOpportunityValidator().Validate(salesOpportunity);
+            if (validation == null) throw new FluentValidation.ValidationException("Validation unavailable");
+            if (!validation.IsValid) throw new FluentValidation.ValidationException(string.Join(' ', validation.Errors));
+        
+            Customer? customer = RetrieveCustomer(customerId);
+            if (customer == null) throw new NullReferenceException($"Customer not found: '{customerId}'");
+
+            SalesOpportunity? existingOpportunity = customer.SalesOpportunities?.FirstOrDefault(x =>
+                x.SalesOpportunityId == salesOpportunity.SalesOpportunityId);
+            if (existingOpportunity == null)
+            {
+                customer.SalesOpportunities ??= new List<SalesOpportunity>();
+                customer.SalesOpportunities.Add(salesOpportunity);
+            }
+            else
+            {
+                existingOpportunity.Name = salesOpportunity.Name;
+            }
+
+            _customersDataProvider.StoreCustomer(customer);
+
+            return true;
         }
     }
 }

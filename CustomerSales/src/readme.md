@@ -7,5 +7,10 @@ points to consider?
 - case-sensitivity for both filtering and sorting?
 - should xml code comments be added? also could / would the swagger use that?
 - figure out how to pre-populate the input / text box value?
+  - bug: select sales opportunity doesn't populate / clear text input
 - tried to split the components into separate .js files, but kept getting a runtime error with '<'
 - figure out how to specify a default file, for default.html
+- Inline Babel script:137 Warning: Each child in a list should have a unique "key" prop. Check the render method of `CustomersList
+- i'm comfortable with using state, but not sure what best practices are
+- bug change for sales opportunity ids to be duplicated? unsure if already resolved
+- there's no "POCO" equivalent defined on the client side

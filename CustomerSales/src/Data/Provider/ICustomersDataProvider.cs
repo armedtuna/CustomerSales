@@ -10,6 +10,8 @@ namespace Api.Data.Provider
         
         Customer[] RetrieveCustomers(Dictionary<string, string>? filterFields, Dictionary<string, string>? sortFields);
 
+        bool? StoreCustomer(Customer customer);
+
         void StoreCustomers(Customer[] customers);
     }
 }

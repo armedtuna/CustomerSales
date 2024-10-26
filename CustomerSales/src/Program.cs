@@ -1,7 +1,9 @@
+using Api.Data.Provider;
 using Api.Data.Raw;
 using Api.Entities;
 using Api.Models;
 
+// todo-at: test backend validation
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -66,5 +68,29 @@ void SetUpRoutes(WebApplication webApplication)
             string[] () =>
                 CustomerStatusModel.Instance.RetrieveCustomerStatuses())
         .WithName("GetCustomerSalesCustomerStatuses")
+        .WithOpenApi();
+
+    webApplication.MapPost($"{customerSalesRoot}/testsave",
+            void () =>
+            {
+                Customer[] customers =
+                    CustomerModel.Instance.RetrieveCustomers(null, null, null, null);
+                customers[0].Name += ".";
+                CustomersDataProvider.Instance.StoreCustomer(customers[0]);
+            })
+        .WithName("PostCustomerSalesTestSave")
+        .WithOpenApi();
+
+    // todo-at: urls are a bit messy and should be made consistent
+    webApplication.MapPost($"{customerSalesRoot}/customer",
+            bool? (Customer customer) =>
+                CustomerModel.Instance.SaveCustomer(customer))
+        .WithName("PostCustomerSalesCustomer")
+        .WithOpenApi();
+
+    webApplication.MapPost($"{customerSalesRoot}/customer/{{customerId}}/salesopportunity",
+            bool? (Guid customerId, SalesOpportunity opportunity) =>
+                CustomerModel.Instance.UpsertSalesOpportunity(customerId, opportunity))
+        .WithName("PostCustomerSalesSalesOpportunity")
         .WithOpenApi();
 }

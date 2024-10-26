@@ -34,16 +34,6 @@ namespace Api.Data.Raw
             {
                 throw new JsonSerializationException($"Customer JSON deserialization failed, path: '${DataFilePath}'");
             }
-
-            // todo-at: remove this when done testing
-            customers[0].SalesOpportunities =
-            [
-                new SalesOpportunity()
-                {
-                    SalesOpportunityId = Guid.NewGuid(),
-                    Name = "One"
-                }
-            ];
             
             return customers;
         }

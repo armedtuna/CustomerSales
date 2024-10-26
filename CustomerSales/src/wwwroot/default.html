@@ -19,43 +19,15 @@
 import React, { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 
-function CustomerDetails({ customerId }) {
-  // todo-at: centralize this config?
-  const baseDataUrl = 'http://localhost:5056/customersales/'
-  const dataUrls = {
-    customers: `${baseDataUrl}customers`,
-    customerStatuses: `${baseDataUrl}statuses`
-  }
-  const [customer, setCustomer] = useState({})
-  useEffect(() => {
-    refreshCustomer(customerId)
-  }, [])
-  
-  const refreshCustomer = async () => {
-    // todo-at: extract a method to build urls?
-    let dataUrl = `${dataUrls.customers}/${customerId}`
-    console.log(dataUrl)
-    await fetchJson(dataUrl, (customer) => {
-      setCustomer(customer)
-    })
-  }
-  
-  return (
-          <>
-            <p>{new Date().toLocaleTimeString()}</p>
-            <h1>H1: '{customer.name}'</h1>
-            <p>Paragraph...</p>
-          </>
-  )
+const baseDataUrl = 'http://localhost:5056/customersales/'
+const dataUrls = {
+  customers: `${baseDataUrl}customers`,
+  customerStatuses: `${baseDataUrl}statuses`,
+  saveCustomer: `${baseDataUrl}customer`,
+  saveSalesOpportunity: `${baseDataUrl}customer/[customerId]/salesopportunity`
 }
 
 function CustomersList() {
-  const baseDataUrl = 'http://localhost:5056/customersales/'
-  const dataUrls = {
-    customers: `${baseDataUrl}customers`,
-    customerStatuses: `${baseDataUrl}statuses`
-  }
-
   const [customers, setCustomers] = useState([])
   const [customerStatuses, setCustomerStatuses] = useState([])
   const [nameSort, setNameSort] = useState('')
@@ -139,7 +111,7 @@ function CustomersList() {
                     <select id="filterStatus" onChange={(e) => setStatusFilter(e.target.value)}>
                       {customerStatuses.map((status) => {
                         return (
-                                <option>{status}</option>
+                                <option key={status}>{status}</option>
                         )
                       })}
                     </select>
@@ -189,30 +161,69 @@ function CustomerView({ customer }) {
 }
 
 function CustomerEdit({customer, customerStatuses}) {
-  const [modifiedCustomer, setmodifiedCustomer] = useState({})
-  const [modifiedOpportunity, setModifiedOpportunity] = useState({})
+  const [customerCopy, setCustomerCopy] = useState(customer)
+  const [modifiedCustomerStatus, setModifiedCustomerStatus] = useState('')
+  const [modifiedOpportunityId, setModifiedOpportunityId] = useState('')
+  const [modifiedOpportunityName, setModifiedOpportunityName] = useState({})
 
   const changeStatus = (status) => {
-    modifiedCustomer.status = status
-    setmodifiedCustomer(modifiedCustomer)
+    setModifiedCustomerStatus(status)
   }
 
-  const changeOpportunity = (opportunity) => {
+  const changeOpportunityId = (opportunityId) => {
     // todo-at: test adding new opportunity
     const matchingOpportunity = customer.salesOpportunities?.find((o) =>
-            o.salesOpportunityId === opportunity)
-    modifiedOpportunity.saleOpportunityId = opportunity
-    modifiedOpportunity.name = matchingOpportunity?.name
+            o.salesOpportunityId === opportunityId)
 
-    setModifiedOpportunity(modifiedOpportunity)
-    console.log(modifiedOpportunity)
+    setModifiedOpportunityId(opportunityId)
+    setModifiedOpportunityName(matchingOpportunity?.name)
+    console.log(modifiedOpportunityId)
+  }
+  
+  const changeOpportunityName = (name) => {
+    setModifiedOpportunityName(name)
   }
 
   const saveCustomer = (e) => {
-    console.log(modifiedCustomer)
+    console.log(modifiedCustomerStatus)
+    if (modifiedCustomerStatus) {
+      let dataUrl = `${dataUrls.saveCustomer}`
+              .replace('[customerId]', customer.customerId)
+      console.log(dataUrl)
+      customer.status = modifiedCustomerStatus
+      postJson(dataUrl, customer, () => {
+        console.log(`Customer saved: '${customer.customerId}'`)})
+    }
+  }
+  
+  const saveOpportunity = (e) => {
+    console.log(modifiedOpportunityId)
+    if (modifiedOpportunityName) {
+      let dataUrl = `${dataUrls.saveSalesOpportunity}`
+              .replace('[customerId]', customer.customerId)
+      console.log(dataUrl)
+      const opportunity = {
+        name: modifiedOpportunityName
+      }
+      if (modifiedOpportunityId) {
+        opportunity.salesOpportunityId = modifiedOpportunityId
+      }
+
+      postJson(dataUrl, opportunity, () => {
+        console.log(`Customer saved: '${customer.customerId}'`)
+        refreshCustomer()
+      })
+    }
   }
 
-  //console.log(customer)
+  const refreshCustomer = async () => {
+    // todo-at: extract a method to build urls?
+    let dataUrl = `${dataUrls.customers}/${customer.customerId}`
+    console.log(dataUrl)
+    await fetchJson(dataUrl, (customer) => {
+      setCustomerCopy(customer)
+    })
+  }
 
   // todo-at: try this shorter version:
   // <select id="opportunities" onChange={(e) => changeOpportunity(e.target.value)}>
@@ -221,28 +232,33 @@ function CustomerEdit({customer, customerStatuses}) {
   return (
           <tr>
             <td>
-              <select id="status" onChange={(e) => changeStatus(e.target.value)}>
+              <select id="status" onChange={(e) => changeStatus(e.target.value)} defaultValue={customer?.status}>
                 {customerStatuses.map((status) => {
                   //console.log(`${status} === ${customer.status}: ${status === customer.status}`)
                   return (
-                          <option selected={status === customer.status ? "selected" : null}>{status}</option>
+                          <option key={status} value={status}>{status}</option>
                   )
                 })}
               </select>
             </td>
             <td>
-              <select id="opportunities" onChange={(e) => changeOpportunity(e.target.value)}>
+              <button type="button" onClick={(e) => saveCustomer(e)}>Save Customer</button>
+            </td>
+            <td>
+              <select id="opportunities" onChange={(e) => changeOpportunityId(e.target.value)}>
                 <option value="">Add Opportunity</option>
-                {customer.salesOpportunities?.map((opportunity) => {
+                {customerCopy?.salesOpportunities?.map((opportunity) => {
                   return (
-                          <option value={opportunity.salesOpportunityId}>{opportunity.name}</option>
+                          <option key={opportunity.salesOpportunityId}
+                                  value={opportunity.salesOpportunityId}>{opportunity.name}</option>
                   )
                 })}
               </select>
-              <input type="text" value={modifiedOpportunity.name}></input>
+              <input type="text" value={modifiedOpportunityId.name}
+                     onChange={(e) => changeOpportunityName(e.target.value)}></input>
             </td>
             <td>
-              <button type="button" onClick={(e) => saveCustomer(e)}>Save</button>
+              <button type="button" onClick={(e) => saveOpportunity(e)}>Save Opportunity</button>
             </td>
           </tr>
   )
@@ -254,6 +270,23 @@ const fetchJson = async (url, onFetched) => {
           .then((data) => {
             console.log(data)
             onFetched(data)
+          })
+          .catch((err) => {
+            console.log(err.message)
+          })
+}
+
+const postJson = async (url, body, onPosted) => {
+  const options = {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  }
+  await fetch(url, options)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data)
+            onPosted(data)
           })
           .catch((err) => {
             console.log(err.message)
