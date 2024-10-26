@@ -9,10 +9,18 @@ points to consider?
 - figure out how to pre-populate the input / text box value?
   - bug: select sales opportunity doesn't populate / clear text input
 - tried to split the components into separate .js files, but kept getting a runtime error with '<'
+  - it's probably some kind of config error?
+  - tried the default sample components from https://react.dev/learn/importing-and-exporting-components and they produced the same error
+  - others online are having a similar problem with the same error
 - figure out how to specify a default file, for default.html
 - Inline Babel script:137 Warning: Each child in a list should have a unique "key" prop. Check the render method of `CustomersList
-- i'm comfortable with using state, but not sure what best practices are
+- i like using state, but not sure what best practices are / reminds me of something called observable?
 - bug change for sales opportunity ids to be duplicated? unsure if already resolved
 - there's no "POCO" equivalent defined on the client side
 - no front-end validation
+- cover backend data paging (and existing functions)?
+- mention api.http for creating fresh database / similar to swagger?
+- find command for how the project was started?
+  - tried to use minimal templates so that i could learn more about how things connect together
+- inputs missing labels?
 - 

@@ -3,7 +3,6 @@ using Api.Data.Raw;
 using Api.Entities;
 using Api.Models;
 
-// todo-at: test backend validation
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
