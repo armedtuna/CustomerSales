@@ -14,3 +14,5 @@ points to consider?
 - i'm comfortable with using state, but not sure what best practices are
 - bug change for sales opportunity ids to be duplicated? unsure if already resolved
 - there's no "POCO" equivalent defined on the client side
+- no front-end validation
+- 

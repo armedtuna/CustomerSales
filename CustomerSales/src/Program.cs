@@ -64,10 +64,16 @@ void SetUpRoutes(WebApplication webApplication)
         .WithName("GetCustomerSalesReadCustomer")
         .WithOpenApi();
 
-    webApplication.MapGet($"{customerSalesRoot}/statuses",
+    webApplication.MapGet($"{customerSalesRoot}/customers/statuses",
             string[] () =>
                 CustomerStatusModel.Instance.RetrieveCustomerStatuses())
         .WithName("GetCustomerSalesCustomerStatuses")
+        .WithOpenApi();
+
+    webApplication.MapGet($"{customerSalesRoot}/salesopportunity/statuses",
+            string[] () =>
+                SalesOpportunityStatusModel.Instance.RetrieveSalesOpportunityStatuses())
+        .WithName("GetCustomerSalesOpportunityStatuses")
         .WithOpenApi();
 
     webApplication.MapPost($"{customerSalesRoot}/testsave",

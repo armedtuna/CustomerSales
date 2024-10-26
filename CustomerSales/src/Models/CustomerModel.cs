@@ -79,6 +79,7 @@ namespace Api.Models
             }
             else
             {
+                existingOpportunity.Status = salesOpportunity.Status;
                 existingOpportunity.Name = salesOpportunity.Name;
             }
 

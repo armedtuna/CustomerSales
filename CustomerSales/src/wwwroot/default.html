@@ -22,7 +22,8 @@ import { createRoot } from 'react-dom/client'
 const baseDataUrl = 'http://localhost:5056/customersales/'
 const dataUrls = {
   customers: `${baseDataUrl}customers`,
-  customerStatuses: `${baseDataUrl}statuses`,
+  customerStatuses: `${baseDataUrl}customers/statuses`,
+  salesOpportunityStatuses: `${baseDataUrl}salesopportunity/statuses`,
   saveCustomer: `${baseDataUrl}customer`,
   saveSalesOpportunity: `${baseDataUrl}customer/[customerId]/salesopportunity`
 }
@@ -30,16 +31,19 @@ const dataUrls = {
 function CustomersList() {
   const [customers, setCustomers] = useState([])
   const [customerStatuses, setCustomerStatuses] = useState([])
+  const [salesOpportunityStatuses, setSalesOpportunityStatuses] = useState([])
   const [nameSort, setNameSort] = useState('')
   const [statusSort, setStatusSort] = useState('')
   const [nameFilter, setNameFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
-  const [showCustomerDetails, setShowCustomerDetails] = useState({})
   const [showDetails, setShowDetails] = useState({})
   const [simpleShowDetails, setSimpleShowDetails] = useState(false)
   useEffect(() => {
     fetchJson(dataUrls.customerStatuses, (statuses) => {
       setCustomerStatuses(statuses)
+    })
+    fetchJson(dataUrls.salesOpportunityStatuses, (statuses) => {
+      setSalesOpportunityStatuses(statuses)
     })
     refreshCustomers()
   }, [])
@@ -136,10 +140,12 @@ function CustomersList() {
                 return (
                         <>
                           <tr onClick={() => toggleShowDetails(customer.customerId)}>
-                            <CustomerView customer={customer}/>
+                            <CustomerView customer={customer} />
                           </tr>
                           {showDetails[customer.customerId]
-                                  ? <CustomerEdit customer={customer} customerStatuses={customerStatuses}/>
+                                  ? <CustomerEdit customer={customer}
+                                                  customerStatuses={customerStatuses}
+                                                  salesOpportunityStatuses={salesOpportunityStatuses} />
                                   : null
                           }
                         </>
@@ -160,13 +166,14 @@ function CustomerView({ customer }) {
   )
 }
 
-function CustomerEdit({customer, customerStatuses}) {
+function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
   const [customerCopy, setCustomerCopy] = useState(customer)
   const [modifiedCustomerStatus, setModifiedCustomerStatus] = useState('')
   const [modifiedOpportunityId, setModifiedOpportunityId] = useState('')
-  const [modifiedOpportunityName, setModifiedOpportunityName] = useState({})
+  const [modifiedOpportunityStatus, setModifiedOpportunityStatus] = useState('')
+  const [modifiedOpportunityName, setModifiedOpportunityName] = useState('')
 
-  const changeStatus = (status) => {
+  const changeCustomerStatus = (status) => {
     setModifiedCustomerStatus(status)
   }
 
@@ -178,6 +185,10 @@ function CustomerEdit({customer, customerStatuses}) {
     setModifiedOpportunityId(opportunityId)
     setModifiedOpportunityName(matchingOpportunity?.name)
     console.log(modifiedOpportunityId)
+  }
+  
+  const changeOpportunityStatus = (status) => {
+    setModifiedOpportunityStatus(status)
   }
   
   const changeOpportunityName = (name) => {
@@ -197,17 +208,24 @@ function CustomerEdit({customer, customerStatuses}) {
   }
   
   const saveOpportunity = (e) => {
-    console.log(modifiedOpportunityId)
-    if (modifiedOpportunityName) {
-      let dataUrl = `${dataUrls.saveSalesOpportunity}`
-              .replace('[customerId]', customer.customerId)
-      console.log(dataUrl)
+    function buildOpportunity() {
       const opportunity = {
+        status: modifiedOpportunityStatus,
         name: modifiedOpportunityName
       }
       if (modifiedOpportunityId) {
         opportunity.salesOpportunityId = modifiedOpportunityId
       }
+
+      return opportunity
+    }
+
+    console.log(modifiedOpportunityId)
+    if (modifiedOpportunityName) {
+      let dataUrl = `${dataUrls.saveSalesOpportunity}`
+              .replace('[customerId]', customer.customerId)
+      console.log(dataUrl)
+      const opportunity = buildOpportunity()
 
       postJson(dataUrl, opportunity, () => {
         console.log(`Customer saved: '${customer.customerId}'`)
@@ -232,7 +250,7 @@ function CustomerEdit({customer, customerStatuses}) {
   return (
           <tr>
             <td>
-              <select id="status" onChange={(e) => changeStatus(e.target.value)} defaultValue={customer?.status}>
+              <select id="status" onChange={(e) => changeCustomerStatus(e.target.value)} defaultValue={customer?.status}>
                 {customerStatuses.map((status) => {
                   //console.log(`${status} === ${customer.status}: ${status === customer.status}`)
                   return (
@@ -240,8 +258,6 @@ function CustomerEdit({customer, customerStatuses}) {
                   )
                 })}
               </select>
-            </td>
-            <td>
               <button type="button" onClick={(e) => saveCustomer(e)}>Save Customer</button>
             </td>
             <td>
@@ -254,10 +270,16 @@ function CustomerEdit({customer, customerStatuses}) {
                   )
                 })}
               </select>
+              <select id="status" onChange={(e) => changeOpportunityStatus(e.target.value)}>
+                {salesOpportunityStatuses.map((status) => {
+                  return (
+                          <option key={status}
+                                  value={status}>{status}</option>
+                  )
+                })}
+              </select>
               <input type="text" value={modifiedOpportunityId.name}
                      onChange={(e) => changeOpportunityName(e.target.value)}></input>
-            </td>
-            <td>
               <button type="button" onClick={(e) => saveOpportunity(e)}>Save Opportunity</button>
             </td>
           </tr>
