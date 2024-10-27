@@ -2,6 +2,8 @@
 
 Note that this is my first React project, and I might be not aware of best practices. Also note that I tried splitting the components into separate JavaScript files which produced a runtime error -- see below.
 
+Upon reviewing the Assessment notes, I see that I missed the mention of TypeScript (under Notes, bullet point 2). This was probably because I was so excited by learning more about and working with React. I am definitely a big fan of TypeScript and have encouraged the adoption of it at at-least two companies. In those companies we used it for backend scripts.  
+
 # Getting Started
 
 ## Entities
@@ -11,6 +13,40 @@ In short: a list of **Clients** with zero or more **Sales Opportunities**.
 ## Data Store
 
 A JSON file. Sample data can be produced using the `/customersales/dumpjson` endpoint either from `API.http` or the Swagger.
+
+## UI
+
+Some attempts were made to make the UI presentable, but overall there's a lot more that could / should be done in that area.
+
+Essentially:
+- The column headings `Name`, and `Status` enabling sorting.
+  - There is limited support for sorting on both fields at the same time.
+  - Thus there is a `Clear Sort` button.
+- The controls in the green heading section are for filtering.
+  - It is case-sensitive
+  - The `Filter` button needs to be pressed to apply the filter.
+  - To clear filtering, clear out the related inputs, and press the `Filter` button again.
+- There is currently no UI feature to add a new customer.
+  - A developer could use the Swagger.
+  - The intent was that the sample JSON data will be used. See Data Store above. 
+- Clicking on a customer row will show / hide an editing row.
+  - Note that there are two separate `Save ...` buttons.
+  - A new sales opportunity can be added, by selecting `Add Opportunity`.
+  - See Known Bugs below re sales opportunities.
+- Only the `Save Customer` button has a status indicator showing "Saving...".
+  - This is displayed for a minimum of 1 second, since otherwise it might produce a mysterious flicker.
+
+## Project Structure
+
+- `API`
+  - `wwwroot`: Default Web server static files root
+  - `Data`: The sample JSON data, as well as a provider wrapper around that. The expectation being that the sample JSON data could be replaced by a database.
+  - `Entities`: The C# contracts, and enums.
+  - `Models`: The expected backend layer that respond / receive requests.
+    - I took some shortcuts for:
+      - `dumpjson` endpoint, for example calling the `Data.Raw` layer directly. I did that, because I expect the sample JSON data to be temporary.
+      - `testsave` endpoint, since I wanted a very quick test to ensure that saving was working.
+- Backend unit tests
 
 # Known Bugs
 
