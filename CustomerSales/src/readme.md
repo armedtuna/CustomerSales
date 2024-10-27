@@ -48,6 +48,10 @@ Essentially:
       - `testsave` endpoint, since I wanted a very quick test to ensure that saving was working.
 - Backend unit tests
 
+## TODO Comments
+
+As I'm working I often leave `todo-at` comments for later consideration or work. I've removed quite a few of those after either considering them or since I've covered them in this document. However, some still remain, and I'm not ready to remove them yet. 
+
 # Known Bugs
 
 1. Editing a Sales Opportunity doesn't pre-select the correct value in the HTML select. The value is being set in React state, and browser debugging seems to show it running correctly, but the state didn't change after being set.
