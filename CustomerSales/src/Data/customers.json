@@ -6,7 +6,23 @@
     "Name": "Aelinos Cicele",
     "Email": "aelinos@mail.com",
     "PhoneNumber": "1234",
-    "SalesOpportunities": null
+    "SalesOpportunities": [
+      {
+        "SalesOpportunityId": "b7e20061-6ddc-42bb-b76c-0c865513a343",
+        "Status": "New",
+        "Name": "One!"
+      },
+      {
+        "SalesOpportunityId": "a34e9df2-f108-4f73-a00f-54dacc11a0c8",
+        "Status": "ClosedLost",
+        "Name": "Third!"
+      },
+      {
+        "SalesOpportunityId": "b0b37f13-81f4-4439-9f21-74ce43993660",
+        "Status": "ClosedLost",
+        "Name": "Lost 2"
+      }
+    ]
   },
   {
     "CustomerId": "ec167737-2147-4eb8-be59-1aafc09fafa6",
@@ -15,7 +31,18 @@
     "Name": "Contanc Herrion",
     "Email": "contanc@herrion.com",
     "PhoneNumber": "0800CONTANC",
-    "SalesOpportunities": null
+    "SalesOpportunities": [
+      {
+        "SalesOpportunityId": "54432128-ec07-49ba-98bf-7874e41082af",
+        "Status": "New",
+        "Name": "01b"
+      },
+      {
+        "SalesOpportunityId": "b457b0c1-aaea-4aa9-a680-39fef6226bac",
+        "Status": "New",
+        "Name": "02"
+      }
+    ]
   },
   {
     "CustomerId": "18e47aff-72de-4849-a186-f0607befc2fa",
