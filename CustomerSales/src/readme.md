@@ -2,7 +2,7 @@
 
 Note that this is my first React project, and I might be not aware of best practices. Also note that I tried splitting the components into separate JavaScript files which produced a runtime error -- see below.
 
-Upon reviewing the Assessment notes, I see that I missed the mention of TypeScript (under Notes, bullet point 2). This was probably because I was so excited by learning more about and working with React. I am definitely a big fan of TypeScript and have encouraged the adoption of it at at-least two companies. In those companies we used it for backend scripts.  
+Upon reviewing the Assessment notes, I see that I missed the mention of TypeScript (under Notes, bullet point 2). This was probably because I was so excited by learning more about and working with React. Ironically I was thinking of using TypeScript specifically for the frontend copy of entity contracts. I am definitely a big fan of TypeScript and have encouraged the adoption of it at at-least two companies. In those companies we used it for backend scripts.  
 
 # Getting Started
 
