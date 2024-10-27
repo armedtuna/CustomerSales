@@ -101,6 +101,14 @@ function CustomersList() {
     return refreshCustomers()
   }
 
+  const toggleShowDetails = (customerId) => {
+    setSimpleShowDetails(!simpleShowDetails)
+
+    const show = showDetails[customerId]
+    showDetails[`${customerId}`] = !!!show
+    setShowDetails(showDetails)
+  }
+
   return (
           <>
             <table className="styled-table">
@@ -130,14 +138,6 @@ function CustomersList() {
               </thead>
               <tbody>
               {customers.map((customer) => {
-                const toggleShowDetails = (customerId) => {
-                  setSimpleShowDetails(!simpleShowDetails)
-
-                  const show = showDetails[customerId]
-                  showDetails[`${customerId}`] = !!!show
-                  setShowDetails(showDetails)
-                }
-
                 return (
                         <>
                           <tr onClick={() => toggleShowDetails(customer.customerId)}>
@@ -163,6 +163,7 @@ function CustomerView({ customer }) {
           <>
             <td>{customer.name}</td>
             <td>{customer.status}</td>
+            <td></td>
           </>
   )
 }
@@ -173,27 +174,24 @@ function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
   const [modifiedOpportunityId, setModifiedOpportunityId] = useState('')
   const [modifiedOpportunityStatus, setModifiedOpportunityStatus] = useState('')
   const [modifiedOpportunityName, setModifiedOpportunityName] = useState('')
-
-  const changeCustomerStatus = (status) => {
-    setModifiedCustomerStatus(status)
-  }
+  const [showCustomerSaving, setShowCustomerSaving] = useState(false)
 
   const changeOpportunityId = (opportunityId) => {
-    // todo-at: test adding new opportunity
     const matchingOpportunity = customer.salesOpportunities?.find((o) =>
             o.salesOpportunityId === opportunityId)
 
     setModifiedOpportunityId(opportunityId)
-    setModifiedOpportunityName(matchingOpportunity?.name)
+    if (matchingOpportunity) {
+      setModifiedOpportunityName(matchingOpportunity.name)
+      setModifiedOpportunityStatus(matchingOpportunity.status)
+    } else {
+      setModifiedOpportunityName('')
+      setModifiedOpportunityStatus(salesOpportunityStatuses[0]?.status)
+    }
+
+    console.log(matchingOpportunity)
+    console.log(`modifiedOpportunityStatus: '${modifiedOpportunityStatus}'`)
     console.log(modifiedOpportunityId)
-  }
-  
-  const changeOpportunityStatus = (status) => {
-    setModifiedOpportunityStatus(status)
-  }
-  
-  const changeOpportunityName = (name) => {
-    setModifiedOpportunityName(name)
   }
 
   const saveCustomer = (e) => {
@@ -203,8 +201,10 @@ function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
               .replace('[customerId]', customer.customerId)
       console.log(dataUrl)
       customer.status = modifiedCustomerStatus
+      setShowCustomerSaving(true)
       postJson(dataUrl, customer, () => {
         console.log(`Customer saved: '${customer.customerId}'`)})
+        setTimeout(() => setShowCustomerSaving(false), 1000)
     }
   }
   
@@ -251,7 +251,8 @@ function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
   return (
           <tr>
             <td>
-              <select id="status" onChange={(e) => changeCustomerStatus(e.target.value)} defaultValue={customer?.status}>
+              <select id="status" onChange={(e) => setModifiedCustomerStatus(e.target.value)}
+                      defaultValue={customer?.status}>
                 {customerStatuses.map((status) => {
                   //console.log(`${status} === ${customer.status}: ${status === customer.status}`)
                   return (
@@ -260,6 +261,10 @@ function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
                 })}
               </select>
               <button type="button" onClick={(e) => saveCustomer(e)}>Save Customer</button>
+              {showCustomerSaving
+                      ? <span className='savingSpan'>Saving...</span>
+                      : null
+              }
             </td>
             <td>
               <select id="opportunities" onChange={(e) => changeOpportunityId(e.target.value)}>
@@ -271,7 +276,8 @@ function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
                   )
                 })}
               </select>
-              <select id="status" onChange={(e) => changeOpportunityStatus(e.target.value)}>
+              <select id="status" onChange={(e) => setModifiedOpportunityStatus(e.target.value)}
+                      defaultValue={modifiedOpportunityStatus}>
                 {salesOpportunityStatuses.map((status) => {
                   return (
                           <option key={status}
@@ -279,10 +285,11 @@ function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
                   )
                 })}
               </select>
-              <input type="text" value={modifiedOpportunityId.name}
-                     onChange={(e) => changeOpportunityName(e.target.value)}></input>
+              <input type="text" value={modifiedOpportunityName}
+                     onChange={(e) => setModifiedOpportunityName(e.target.value)}></input>
               <button type="button" onClick={(e) => saveOpportunity(e)}>Save Opportunity</button>
             </td>
+            <td></td>
           </tr>
   )
 }
@@ -290,7 +297,7 @@ function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
 function App() {
   return (
           <>
-            <CustomersList/>
+            <CustomersList />
           </>
   )
 }

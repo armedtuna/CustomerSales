@@ -9,14 +9,13 @@ public class SalesOpportunityStatusModel : ISalesOpportunityStatusModel
     public string[] RetrieveSalesOpportunityStatuses()
     {
         List<string> statuses = [];
-        foreach (SalesOpportunityStatusEnum status in Enum.GetValues<SalesOpportunityStatusEnum>())
+        IEnumerable<SalesOpportunityStatusEnum> values = Enum.GetValues<SalesOpportunityStatusEnum>()
+            .Where(x => x != SalesOpportunityStatusEnum.Unknown);
+        foreach (SalesOpportunityStatusEnum status in values)
         {
             // there's probably some translation resources missing here, for example ideally:
             // "ClosedWon" would be displayed as "Closed Won", or "Closed-won", etc.
-            statuses.Add(status == SalesOpportunityStatusEnum.Unknown
-                ? string.Empty
-                : status.ToString()
-            );
+            statuses.Add(status.ToString());
         }
         
         return statuses.ToArray();

@@ -46,6 +46,12 @@ ul {
     padding-inline-start: 20px;
 }
 
+.savingSpan {
+    background-color: green;
+    padding: 4px;
+    color: white;
+}
+
 /* CSS from: https://dev.to/dcodeyt/creating-beautiful-html-tables-with-css-428l */
 .styled-table {
     border-collapse: collapse;

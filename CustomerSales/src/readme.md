@@ -1,4 +1,3 @@
-// todo-at: complete
 points to consider?
 - notes re dependency injection vs "instance"?
 - config file cleanup / devops / deploy / build server
@@ -23,4 +22,8 @@ points to consider?
 - find command for how the project was started?
   - tried to use minimal templates so that i could learn more about how things connect together
 - inputs missing labels?
+- currently fetchLib expects JSON to be returned. either of must change:
+  - if backend returns an error then it must be JSON, and frontend handles that error,
+  - OR frontend handles backend non-JSON return
+- bug: add new / save opportunity
 - 

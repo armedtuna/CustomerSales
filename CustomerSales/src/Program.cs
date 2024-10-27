@@ -86,7 +86,6 @@ void SetUpRoutes(WebApplication webApplication)
         .WithName("PostCustomerSalesTestSave")
         .WithOpenApi();
 
-    // todo-at: urls are a bit messy and should be made consistent
     webApplication.MapPost($"{customerSalesRoot}/customer",
             bool? (Customer customer) =>
                 CustomerModel.Instance.SaveCustomer(customer))
