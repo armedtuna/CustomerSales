@@ -42,7 +42,7 @@ Essentially:
   - `wwwroot`: Default Web server static files root
   - `Data`: The sample JSON data, as well as a provider wrapper around that. The expectation being that the sample JSON data could be replaced by a database.
   - `Entities`: The C# contracts, and enums.
-  - `Models`: The expected backend layer that respond / receive requests.
+  - `Models`: The expected backend layer that responds to / receives requests.
     - I took some shortcuts for:
       - `dumpjson` endpoint, for example calling the `Data.Raw` layer directly. I did that, because I expect the sample JSON data to be temporary.
       - `testsave` endpoint, since I wanted a very quick test to ensure that saving was working.
