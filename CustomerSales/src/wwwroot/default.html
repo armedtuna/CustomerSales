@@ -172,7 +172,8 @@ function CustomerEdit({customer, customerStatuses, salesOpportunityStatuses}) {
   const [customerCopy, setCustomerCopy] = useState(customer)
   const [modifiedCustomerStatus, setModifiedCustomerStatus] = useState('')
   const [modifiedOpportunityId, setModifiedOpportunityId] = useState('')
-  const [modifiedOpportunityStatus, setModifiedOpportunityStatus] = useState('')
+  // todo-at: not fully keen on setting the default opportunity status here. is there a better way?
+  const [modifiedOpportunityStatus, setModifiedOpportunityStatus] = useState('New')
   const [modifiedOpportunityName, setModifiedOpportunityName] = useState('')
   const [showCustomerSaving, setShowCustomerSaving] = useState(false)
 
