@@ -4,7 +4,7 @@ Note that this is my first React project, and I might be not aware of best pract
 
 Upon reviewing the Assessment notes, I see that I missed the mention of TypeScript (under Notes, bullet point 2). This was probably because I was so excited by learning more about and working with React. Ironically I was thinking of using TypeScript specifically for the frontend copy of entity contracts. I am definitely a big fan of TypeScript and have encouraged the adoption of it at at-least two companies. In those companies we used it for backend scripts.
 
-PS Since I'm a keen supporter of TypeScript, I have made a very rough draft start: see `fetchLib.ts`. Note that this is untested code.
+PS Since I'm a keen supporter of TypeScript, I have made a very rough draft start: see `fetchLib.ts`, and `default.ts`. Note that this is untested code.
 
 # Getting Started
 
