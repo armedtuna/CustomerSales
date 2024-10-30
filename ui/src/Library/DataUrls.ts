@@ -1,4 +1,4 @@
-class DataUrls {
+class DataUrlsData {
     customers: string
     customer: (customerId: string) => string
     customerStatuses: string
@@ -19,4 +19,5 @@ class DataUrls {
     }
 }
 
-export const dataUrls = new DataUrls('http://localhost:5056/customersales/')
+const DataUrls = new DataUrlsData('http://localhost:5056/customersales/')
+export default DataUrls

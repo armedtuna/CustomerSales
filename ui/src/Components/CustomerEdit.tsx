@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Customer from '../Entities/Customer'
 import { fetchJson, postJson } from '../Library/FetchHelper'
-import { dataUrls } from '../Library/DataUrls'
+import DataUrls from '../Library/DataUrls'
 import SalesOpportunity from "../Entities/SalesOpportunity";
 
 class CustomerEditData {
@@ -17,7 +17,7 @@ class CustomerEditData {
 }
 
 export default function CustomerEdit({ customer, customerStatuses, salesOpportunityStatuses }: CustomerEditData) {
-    const [customerCopy, setCustomerCopy] = useState(customer)
+    const [customerCopy, setCustomerCopy] = useState(customer as Customer)
     const [modifiedCustomerStatus, setModifiedCustomerStatus] = useState('')
     const [modifiedOpportunityId, setModifiedOpportunityId] = useState('')
     // todo-at: not fully keen on setting the default opportunity status here. is there a better way?
@@ -48,7 +48,7 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
         if (modifiedCustomerStatus) {
             customer.status = modifiedCustomerStatus
             setShowCustomerSaving(true)
-            postJson(`${dataUrls.saveCustomer}`, customer, () => {
+            postJson<boolean | null>(`${DataUrls.saveCustomer}`, customer, () => {
                 console.log(`Customer saved: '${customer.customerId}'`)})
             setTimeout(() => setShowCustomerSaving(false), 1000)
         }
@@ -58,11 +58,11 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
         console.log(modifiedOpportunityId)
         if (modifiedOpportunityName) {
             // todo-at: is this the best to convert a `string | null` to a `string`?
-            let dataUrl = `${dataUrls.saveSalesOpportunity(`${customer.customerId}`)}`
+            let dataUrl = `${DataUrls.saveSalesOpportunity(`${customer.customerId}`)}`
             console.log(dataUrl)
             const opportunity = new SalesOpportunity(modifiedOpportunityId, modifiedOpportunityStatus, modifiedOpportunityName)
 
-            postJson(dataUrl, opportunity, () => {
+            postJson<boolean | null>(dataUrl, opportunity, () => {
                 console.log(`Customer saved: '${customer.customerId}'`)
                 refreshCustomer()
             })
@@ -71,7 +71,7 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
 
     const refreshCustomer = () => {
         // todo-at: is this the best to convert a `string | null` to a `string`?
-        fetchJson(dataUrls.customer(`${customer.customerId}`), (customer) => {
+        fetchJson<Customer>(DataUrls.customer(customer.customerId), (customer) => {
             setCustomerCopy(customer)
         })
     }

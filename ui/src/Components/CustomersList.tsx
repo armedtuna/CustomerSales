@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchJson } from '../Library/FetchHelper'
-import { dataUrls } from '../Library/DataUrls'
+import DataUrls from '../Library/DataUrls'
 import CustomerView from './CustomerView'
 import CustomerEdit from './CustomerEdit'
 import Customer from "../Entities/Customer.ts";
@@ -9,8 +9,8 @@ export default function CustomersList() {
     interface IShowDetailsDictionary { [key: string]: boolean }
     
     const [customers, setCustomers] = useState([])
-    const [customerStatuses, setCustomerStatuses] = useState([])
-    const [salesOpportunityStatuses, setSalesOpportunityStatuses] = useState([])
+    const [customerStatuses, setCustomerStatuses] = useState([] as string[])
+    const [salesOpportunityStatuses, setSalesOpportunityStatuses] = useState([] as string[])
     const [nameSort, setNameSort] = useState('')
     const [statusSort, setStatusSort] = useState('')
     const [nameFilter, setNameFilter] = useState('')
@@ -18,17 +18,17 @@ export default function CustomersList() {
     const [showDetails, setShowDetails] = useState<IShowDetailsDictionary>({})
     const [simpleShowDetails, setSimpleShowDetails] = useState(false)
     useEffect(() => {
-        fetchJson(dataUrls.customerStatuses, (statuses) => {
+        fetchJson<string[]>(DataUrls.customerStatuses, (statuses) => {
             setCustomerStatuses(statuses)
         })
-        fetchJson(dataUrls.salesOpportunityStatuses, (statuses) => {
+        fetchJson<string[]>(DataUrls.salesOpportunityStatuses, (statuses) => {
             setSalesOpportunityStatuses(statuses)
         })
         refreshCustomers()
     }, [])
 
     const refreshCustomers = () => {
-        let dataUrl = `${dataUrls.customers}?`
+        let dataUrl = `${DataUrls.customers}?`
         if (`${nameFilter}`) {
             dataUrl += `&filterName=${nameFilter}`
         }

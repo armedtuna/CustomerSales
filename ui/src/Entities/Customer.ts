@@ -11,6 +11,12 @@ export default class Customer {
 
     constructor(customerId: string, status: string, utcCreatedAt: Date, name: string, email: string | null, phoneNumber: string | null) {
         this.customerId = customerId
+        // todo-at: some validators may be needed here to for example catch empty strings where inappropriate, etc.
+        // - customer id can be empty
+        // - status should probably have a default value (from the backend enum)
+        // - name should have a value
+        // - either email or phoneNumber should have a value
+        // - sales opportunities can be set elsewhere
         this.status = status
         this.utcCreatedAt = utcCreatedAt
         this.name = name
