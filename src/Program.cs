@@ -57,7 +57,6 @@ void SetUpRoutes(WebApplication webApplication)
         .WithName("GetCustomerSalesReadCustomers")
         .WithOpenApi();
 
-    // todo-at: is currently used? or is the data just obtained from the full list?
     webApplication.MapGet($"{customerSalesRoot}/customers/{{customerId}}",
             Customer? (Guid customerId) =>
                 CustomerModel.Instance.RetrieveCustomer(customerId))
