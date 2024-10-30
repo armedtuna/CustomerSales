@@ -3,6 +3,7 @@ using Api.Data.Raw;
 using Api.Entities;
 using Api.Models;
 
+// todo-at: rename this "src" folder to something clear like "backend" -- backend and frontend will be separate projects
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
