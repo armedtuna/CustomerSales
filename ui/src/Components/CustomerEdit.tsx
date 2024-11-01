@@ -109,7 +109,7 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
                     })}
                 </select>
                 <select id="status" onChange={(e) => setModifiedOpportunityStatus(e.target.value)}
-                        defaultValue={modifiedOpportunityStatus}>
+                        value={modifiedOpportunityStatus}>
                     {salesOpportunityStatuses.map((status) => {
                         return (
                             <option key={status}
