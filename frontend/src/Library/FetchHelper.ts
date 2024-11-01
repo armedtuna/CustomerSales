@@ -1,7 +1,4 @@
-//export type FetchedFunction = (data: any) => void
-//export type PostedFunction = (data: any) => void
-
-export function fetchJson<ReturnType>(url: string, onFetched: (data: any) => void) {
+export function fetchJson<ReturnType>(url: string, onFetched: (data: ReturnType) => void) {
     fetch(url /*, {
         method: 'GET',
         mode: 'cors',
