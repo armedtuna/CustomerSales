@@ -3,7 +3,6 @@ using Api.Data.Raw;
 using Api.Entities;
 using Api.Models;
 
-// todo-at: rename this "src" folder to something clear like "backend" -- backend and frontend will be separate projects
 // todo-at: figure how to remove dependency on `wwwroot` folder needing to exist
 var builder = WebApplication.CreateBuilder(args);
 

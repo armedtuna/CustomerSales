@@ -1,10 +1,6 @@
 # Customer Sales
 
-Note that this is my first React project, and I might be not aware of best practices. Also note that I tried splitting the components into separate JavaScript files which produced a runtime error -- see below.
-
-Upon reviewing the Assessment notes, I see that I missed the mention of TypeScript (under Notes, bullet point 2). This was probably because I was so excited by learning more about and working with React. Ironically I was thinking of using TypeScript specifically for the frontend copy of entity contracts. I am definitely a big fan of TypeScript and have encouraged the adoption of it at at-least two companies. In those companies we used it for backend scripts.
-
-PS Since I'm a keen supporter of TypeScript, I have made a very rough draft start: see `fetchLib.ts`, and `default.ts`. Note that this is untested code.
+Note that this is my first React project, and I might be not aware of best practices.
 
 # Getting Started
 
@@ -23,7 +19,7 @@ Some attempts were made to make the UI presentable, but overall there's a lot mo
 Essentially:
 - The column headings `Name`, and `Status` enabling sorting.
   - There is limited support for sorting on both fields at the same time.
-  - Thus there is a `Clear Sort` button.
+  - Thus, there is a `Clear Sort` button.
 - The controls in the green heading section are for filtering.
   - It is case-sensitive
   - The `Filter` button needs to be pressed to apply the filter.
@@ -34,29 +30,32 @@ Essentially:
 - Clicking on a customer row will show / hide an editing row.
   - Note that there are two separate `Save ...` buttons.
   - A new sales opportunity can be added, by selecting `Add Opportunity`.
-  - See Known Bugs below re sales opportunities.
-- Only the `Save Customer` button has a status indicator showing "Saving...".
+- `Save ...` buttons have a status indicator showing "Saving...".
   - This is displayed for a minimum of 1 second, since otherwise it might produce a mysterious flicker.
 
 ## Project Structure
 
-- `API`
-  - `wwwroot`: Default Web server static files root
-  - `Data`: The sample JSON data, as well as a provider wrapper around that. The expectation being that the sample JSON data could be replaced by a database.
-  - `Entities`: The C# contracts, and enums.
-  - `Models`: The expected backend layer that responds to / receives requests.
-    - I took some shortcuts for:
-      - `dumpjson` endpoint, for example calling the `Data.Raw` layer directly. I did that, because I expect the sample JSON data to be temporary.
-      - `testsave` endpoint, since I wanted a very quick test to ensure that saving was working.
-- Backend unit tests
+Essentially there are two projects: backend, and frontend. The backend uses an ASP.NET Core API, and the frontend node React TypeScript. The split exists, because the backend may need more scaling up, since it runs more code on the Web server. Whereas in contrast the frontend is mostly static files which are processed on the viewing Web browser. Having said that a static files Web server may still need scaling up depending on number of concurrent users.
+
+Folders overview:
+- `backend`
+  - `API`
+    - `Data`: The sample JSON data, as well as a provider wrapper around that. The expectation being that the sample JSON data could be replaced by a database.
+    - `Entities`: The C# contracts, and enums.
+    - `Models`: The expected backend layer that responds to / receives requests.
+      - I took some shortcuts for:
+        - `dumpjson` endpoint, for example calling the `Data.Raw` layer directly. I did that, because I expect the sample JSON data to be temporary.
+        - `testsave` endpoint, since I wanted a very quick test to ensure that saving was working.
+  - Backend unit tests
+- `frontend`
+  - `src`
+    - `Components`: Parts and views extracted to keep main application simple.
+    - `Entities`: The TypeScript version of the backend contracts.
+    - `Library`: Some useful code extracted.
 
 ## TODO Comments
 
 As I'm working I often leave `todo-at` comments for later consideration or work. I've removed quite a few of those after either considering them or since I've covered them in this document. However, some still remain, and I'm not ready to remove them yet. 
-
-# Known Bugs
-
-1. Editing a Sales Opportunity doesn't pre-select the correct value in the HTML select. The value is being set in React state, and browser debugging seems to show it running correctly, but the state didn't change after being set.
 
 # Possible Improvements
 
@@ -75,23 +74,15 @@ As I'm working I often leave `todo-at` comments for later consideration or work.
 ## Development Team
 
 - Sorting is currently based on two strings `asc`, and `desc`, and it might be better to turn those into enums instead.
-- Extract the components into separate JavaScript files. When I did that, at runtime it produced an error `Uncaught SyntaxError: Unexpected token <`.
-  - This appears to be a Web server configuration issue. and it seems that the Web server is having difficulty with JSX?
-  - To ensure that my components weren't at fault, I also tried with the sample components from https://react.dev/learn/importing-and-exporting-components.
-  - I see others online describe the same error, but the resolution isn't perfectly clear.
-  - Note that I intentionally made a minimal ASP.NET Core project, as I wanted to learn exactly how React is set up and configured. I considered using ReactJS.NET, but felt that it may obscure some of the learning opportunities, and thus didn't use it as a starting point for this project. 
-- Change the JavaScript to TypeScript so that the frontend can benefit from entity contracts, and stronger typing.
-- Configure a default document, for example `default.html`.
 - The Swagger may be more useful with descriptions. It should be checked if the addition of XML comments in C# can perhaps also appear in Swagger.
 - Change the data source from JSON to a database.
   - How will this affect filtering and paging?
 - Add label elements for all the HTML editing elements.
-- Should `postJson` be awaited?
+- It may be beneficial and / or simpler to change the React TypeScript Web server to also be an ASP.NET Core Web server, since then both will have similar maintenance / security topics.
 
 # Production
 
 There are at least these points to consider to be production ready:
 
 - React Babel has to be changed to something that is more efficient. Babel should only be used in development environments. 
-- For better maintenance, components should be extracted from the default HTML page. This would help to decrease the chance of conflicts in a development team making changes.
 - The specific environment config files would probably need to be removed from source control, likely after a discussion re deployment / build servers. 
