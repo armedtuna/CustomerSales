@@ -2,7 +2,7 @@ import { useState } from "react";
 import Customer from '../Entities/Customer'
 import { fetchJson, postJson } from '../Library/FetchHelper'
 import DataUrls from '../Library/DataUrls'
-import SalesOpportunity from "../Entities/SalesOpportunity";
+import SalesOpportunity from '../Entities/SalesOpportunity'
 import StatusMessage from '../Components/StatusMessage'
 
 class CustomerEditData {

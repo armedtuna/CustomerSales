@@ -8,7 +8,7 @@ class CustomerViewData {
     }
 }
 
-export default function CustomerView({ customer }: CustomerViewData): any {
+export default function CustomerView({ customer }: CustomerViewData) {
     return (
         <>
             <td>{customer.name}</td>
