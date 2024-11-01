@@ -67,7 +67,7 @@ void SetUpRoutes(WebApplication webApplication)
         .WithName("GetCustomerSalesReadCustomers")
         .WithOpenApi();
 
-    webApplication.MapGet($"{customerSalesRoot}/customers/{{customerId}}",
+    webApplication.MapGet($"{customerSalesRoot}/customer/{{customerId}}",
             Customer? (Guid customerId) =>
                 CustomerModel.Instance.RetrieveCustomer(customerId))
         .WithName("GetCustomerSalesReadCustomer")

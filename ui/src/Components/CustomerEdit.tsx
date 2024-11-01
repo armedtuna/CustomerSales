@@ -3,6 +3,7 @@ import Customer from '../Entities/Customer'
 import { fetchJson, postJson } from '../Library/FetchHelper'
 import DataUrls from '../Library/DataUrls'
 import SalesOpportunity from "../Entities/SalesOpportunity";
+import StatusMessage from '../Components/StatusMessage'
 
 class CustomerEditData {
     customer: Customer
@@ -20,10 +21,10 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
     const [customerCopy, setCustomerCopy] = useState(customer as Customer)
     const [modifiedCustomerStatus, setModifiedCustomerStatus] = useState('')
     const [modifiedOpportunityId, setModifiedOpportunityId] = useState('')
-    // todo-at: not fully keen on setting the default opportunity status here. is there a better way?
-    const [modifiedOpportunityStatus, setModifiedOpportunityStatus] = useState('New')
+    const [modifiedOpportunityStatus, setModifiedOpportunityStatus] = useState('')
     const [modifiedOpportunityName, setModifiedOpportunityName] = useState('')
     const [showCustomerSaving, setShowCustomerSaving] = useState(false)
+    const [showCustomerSavingOpportunity, setShowCustomerSavingOpportunity] = useState(false)
 
     const changeOpportunityId = (opportunityId: string) => {
         const matchingOpportunity = customer.salesOpportunities?.find((o) =>
@@ -49,8 +50,9 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
             customer.status = modifiedCustomerStatus
             setShowCustomerSaving(true)
             postJson<boolean | null>(`${DataUrls.saveCustomer}`, customer, () => {
-                console.log(`Customer saved: '${customer.customerId}'`)})
-            setTimeout(() => setShowCustomerSaving(false), 1000)
+                console.log(`Customer saved: '${customer.customerId}'`)
+                setTimeout(() => setShowCustomerSaving(false), 1000)
+            })
         }
     }
 
@@ -65,6 +67,7 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
             postJson<boolean | null>(dataUrl, opportunity, () => {
                 console.log(`Customer saved: '${customer.customerId}'`)
                 refreshCustomer()
+                setTimeout(() => setShowCustomerSavingOpportunity(false), 1000)
             })
         }
     }
@@ -93,10 +96,7 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
                     })}
                 </select>
                 <button type="button" onClick={() => saveCustomer()}>Save Customer</button>
-                {showCustomerSaving
-                    ? <span className='savingSpan'>Saving...</span>
-                    : null
-                }
+                <StatusMessage show={showCustomerSaving} message='Saving...' />
             </td>
             <td>
                 <select id="opportunities" onChange={(e) => changeOpportunityId(e.target.value)}>
@@ -120,6 +120,7 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
                 <input type="text" value={modifiedOpportunityName}
                        onChange={(e) => setModifiedOpportunityName(e.target.value)}></input>
                 <button type="button" onClick={() => saveOpportunity()}>Save Opportunity</button>
+                <StatusMessage show={showCustomerSavingOpportunity} message='Saving...' />
             </td>
             <td></td>
         </tr>
