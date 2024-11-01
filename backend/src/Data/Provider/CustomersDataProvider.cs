@@ -86,6 +86,10 @@ public class CustomersDataProvider : ICustomersDataProvider
         return customers;
     }
 
+    // todo-at: return other stuff instead of / as well?
+    // - `customerId` (in case it was a new customer?
+    // - validation errors?
+    // - bool?
     public bool? StoreCustomer(Customer customer)
     {
         Customer[] customers = _sampleData.ReadSampleDataFromDisk();

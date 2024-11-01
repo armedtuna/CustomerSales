@@ -3,7 +3,11 @@ using Api.Data.Raw;
 using Api.Entities;
 using Api.Models;
 
+// todo-at: rename this "src" folder to something clear like "backend" -- backend and frontend will be separate projects
+// todo-at: figure how to remove dependency on `wwwroot` folder needing to exist
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -13,6 +17,14 @@ builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
 var app = builder.Build();
+
+app.UseCors(policyBuilder =>
+{
+    policyBuilder.AllowAnyHeader()
+        .AllowAnyMethod()
+        // todo-at: move to appsettings
+        .WithOrigins("http://localhost:3000");
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -28,7 +40,6 @@ app.UseHttpsRedirection();
 
 SetUpRoutes(app);
 
-app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.Run();
@@ -56,8 +67,7 @@ void SetUpRoutes(WebApplication webApplication)
         .WithName("GetCustomerSalesReadCustomers")
         .WithOpenApi();
 
-    // todo-at: is currently used? or is the data just obtained from the full list?
-    webApplication.MapGet($"{customerSalesRoot}/customers/{{customerId}}",
+    webApplication.MapGet($"{customerSalesRoot}/customer/{{customerId}}",
             Customer? (Guid customerId) =>
                 CustomerModel.Instance.RetrieveCustomer(customerId))
         .WithName("GetCustomerSalesReadCustomer")

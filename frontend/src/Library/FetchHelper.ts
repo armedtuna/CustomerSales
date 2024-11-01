@@ -1,7 +1,9 @@
-
-const fetchJson = async (url, onFetched) => {
-    await fetch(url)
-        .then((response) => response.json())
+export function fetchJson<ReturnType>(url: string, onFetched: (data: ReturnType) => void) {
+    fetch(url /*, {
+        method: 'GET',
+        mode: 'cors',
+    }*/)
+        .then((response) => response?.json())
         .then((data) => {
             //console.log(data)
             onFetched(data)
@@ -11,13 +13,14 @@ const fetchJson = async (url, onFetched) => {
         })
 }
 
-const postJson = async (url, body, onPosted) => {
+export function postJson<ReturnType>(url: string, body: any, onPosted: (data: ReturnType) => void) {
+    // todo-at: are all these fetch options needed?
     const options = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
     }
-    await fetch(url, options)
+    fetch(url, options)
         .then((response) => response.json())
         .then((data) => {
             //console.log(data)
