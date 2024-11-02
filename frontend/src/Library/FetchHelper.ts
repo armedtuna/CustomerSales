@@ -5,7 +5,6 @@ export function fetchJson<ReturnType>(url: string, onFetched: (data: ReturnType)
     }*/)
         .then((response) => response?.json())
         .then((data) => {
-            //console.log(data)
             onFetched(data)
         })
         .catch((err) => {
@@ -23,7 +22,6 @@ export function postJson<ReturnType>(url: string, body: any, onPosted: (data: Re
     fetch(url, options)
         .then((response) => response.json())
         .then((data) => {
-            //console.log(data)
             onPosted(data)
         })
         .catch((err) => {

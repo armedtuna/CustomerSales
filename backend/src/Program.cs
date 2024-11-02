@@ -3,6 +3,7 @@ using Api.Data.Raw;
 using Api.Entities;
 using Api.Models;
 
+// todo-at: set up docker container 
 // todo-at: figure how to remove dependency on `wwwroot` folder needing to exist
 var builder = WebApplication.CreateBuilder(args);
 

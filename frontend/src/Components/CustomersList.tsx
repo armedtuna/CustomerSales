@@ -3,12 +3,13 @@ import { fetchJson } from '../Library/FetchHelper'
 import DataUrls from '../Library/DataUrls'
 import CustomerView from './CustomerView'
 import CustomerEdit from './CustomerEdit'
-import Customer from "../Entities/Customer.ts";
+import Customer from "../Entities/Customer";
 
+// todo-at: set up docker container 
 export default function CustomersList() {
     interface IShowDetailsDictionary { [key: string]: boolean }
     
-    const [customers, setCustomers] = useState([])
+    const [customers, setCustomers] = useState([] as Customer[])
     const [customerStatuses, setCustomerStatuses] = useState([] as string[])
     const [salesOpportunityStatuses, setSalesOpportunityStatuses] = useState([] as string[])
     const [nameSort, setNameSort] = useState('')
@@ -45,8 +46,7 @@ export default function CustomersList() {
             dataUrl += `&sortStatus=${statusSort}`
         }
 
-        console.log(dataUrl)
-        fetchJson(dataUrl, (customers) => {
+        fetchJson<Customer[]>(dataUrl, (customers) => {
             setCustomers(customers)
         })
     }
@@ -116,11 +116,12 @@ export default function CustomersList() {
                 {customers.map((customer: Customer) => {
                     return (
                         <>
-                            <tr onClick={() => toggleShowDetails(customer.customerId)}>
-                                <CustomerView customer={customer} />
+                            <tr key={customer.customerId} onClick={() => toggleShowDetails(customer.customerId)}>
+                                <CustomerView key={customer.customerId} customer={customer} />
                             </tr>
                             {showDetails[customer.customerId]
-                                ? <CustomerEdit customer={customer}
+                                ? <CustomerEdit key={customer.customerId}
+                                                customer={customer}
                                                 customerStatuses={customerStatuses}
                                                 salesOpportunityStatuses={salesOpportunityStatuses} />
                                 : null

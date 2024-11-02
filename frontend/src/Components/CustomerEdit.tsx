@@ -38,34 +38,30 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
             setModifiedOpportunityName('')
             setModifiedOpportunityStatus(salesOpportunityStatuses[0])
         }
-
-        console.log(matchingOpportunity)
-        console.log(`modifiedOpportunityStatus: '${modifiedOpportunityStatus}'`)
-        console.log(modifiedOpportunityId)
     }
 
     const saveCustomer = () => {
-        console.log(modifiedCustomerStatus)
         if (modifiedCustomerStatus) {
-            customer.status = modifiedCustomerStatus
             setShowCustomerSaving(true)
+
+            customer.status = modifiedCustomerStatus
+            // todo-at: use boolean return
             postJson<boolean | null>(`${DataUrls.saveCustomer}`, customer, () => {
-                console.log(`Customer saved: '${customer.customerId}'`)
                 setTimeout(() => setShowCustomerSaving(false), 1000)
             })
         }
     }
 
     const saveOpportunity = () => {
-        console.log(modifiedOpportunityId)
         if (modifiedOpportunityName) {
+            setShowCustomerSavingOpportunity(true)
+
             // todo-at: is this the best to convert a `string | null` to a `string`?
             let dataUrl = `${DataUrls.saveSalesOpportunity(`${customer.customerId}`)}`
-            console.log(dataUrl)
             const opportunity = new SalesOpportunity(modifiedOpportunityId, modifiedOpportunityStatus, modifiedOpportunityName)
 
+            // todo-at: use boolean return
             postJson<boolean | null>(dataUrl, opportunity, () => {
-                console.log(`Customer saved: '${customer.customerId}'`)
                 refreshCustomer()
                 setTimeout(() => setShowCustomerSavingOpportunity(false), 1000)
             })
@@ -89,7 +85,6 @@ export default function CustomerEdit({ customer, customerStatuses, salesOpportun
                 <select id="status" onChange={(e) => setModifiedCustomerStatus(e.target.value)}
                         defaultValue={customer?.status}>
                     {customerStatuses.map((status) => {
-                        //console.log(`${status} === ${customer.status}: ${status === customer.status}`)
                         return (
                             <option key={status} value={status}>{status}</option>
                         )
