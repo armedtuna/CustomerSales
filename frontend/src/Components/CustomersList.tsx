@@ -123,7 +123,7 @@ export default function CustomersList() {
                                 ? <CustomerEdit key={customer.customerId}
                                                 customer={customer}
                                                 customerStatuses={customerStatuses}
-                                                salesOpportunityStatuses={salesOpportunityStatuses} />
+                                                opportunityStatuses={salesOpportunityStatuses} />
                                 : null
                             }
                         </>

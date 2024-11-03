@@ -4,120 +4,105 @@ import { fetchJson, postJson } from '../Library/FetchHelper'
 import DataUrls from '../Library/DataUrls'
 import SalesOpportunity from '../Entities/SalesOpportunity'
 import StatusMessage from '../Components/StatusMessage'
+import SalesOpportunityEdit from "./SalesOpportunityEdit";
+import { useForm, SubmitHandler } from 'react-hook-form'
 
-class CustomerEditData {
+type EditInputs = {
+    customerId: string
+    name: string
+    email: string
+    phoneNumber: string
+    status: string
+    opportunities: SalesOpportunity[]
+}
+
+class EditData {
     customer: Customer
     customerStatuses: string[]
-    salesOpportunityStatuses: string[]
+    opportunityStatuses: string[]
     
     constructor(customer: Customer) {
         this.customer = customer
         this.customerStatuses = []
-        this.salesOpportunityStatuses = []
+        this.opportunityStatuses = []
     }
 }
 
-export default function CustomerEdit({ customer, customerStatuses, salesOpportunityStatuses }: CustomerEditData) {
-    const [customerCopy, setCustomerCopy] = useState(customer as Customer)
-    const [modifiedCustomerStatus, setModifiedCustomerStatus] = useState('')
-    const [modifiedOpportunityId, setModifiedOpportunityId] = useState('')
-    const [modifiedOpportunityStatus, setModifiedOpportunityStatus] = useState('')
-    const [modifiedOpportunityName, setModifiedOpportunityName] = useState('')
-    const [showCustomerSaving, setShowCustomerSaving] = useState(false)
-    const [showCustomerSavingOpportunity, setShowCustomerSavingOpportunity] = useState(false)
-
-    const changeOpportunityId = (opportunityId: string) => {
-        const matchingOpportunity = customer.salesOpportunities?.find((o) =>
-            o.salesOpportunityId === opportunityId)
-
-        setModifiedOpportunityId(opportunityId)
-        if (matchingOpportunity) {
-            setModifiedOpportunityName(matchingOpportunity.name)
-            setModifiedOpportunityStatus(matchingOpportunity.status)
-        } else {
-            setModifiedOpportunityName('')
-            setModifiedOpportunityStatus(salesOpportunityStatuses[0])
+export default function CustomerEdit({ customer, customerStatuses, opportunityStatuses }: EditData) {
+    const {
+        register,
+        handleSubmit,
+        watch,
+        formState: {errors},
+    } = useForm<EditInputs>({
+        defaultValues: {
+            customerId: customer.customerId,
+            name: customer.name,
+            email: customer.email,
+            phoneNumber: customer.phoneNumber,
+            status: customer.status,
+            opportunities: customer.salesOpportunities
         }
-    }
+    })
+    const watchOpportunity = watch('opportunities')
 
-    const saveCustomer = () => {
-        if (modifiedCustomerStatus) {
-            setShowCustomerSaving(true)
+    const onSubmit: SubmitHandler<EditInputs> =
+        (inputData: Customer) => {
+            saveCustomer(inputData)
+        }
 
-            customer.status = modifiedCustomerStatus
+    const [showSaving, setShowSaving] = useState(false)
+
+    const saveCustomer = (customer: Customer) => {
+        if (customer) {
+            setShowSaving(true)
             // todo-at: use boolean return
             postJson<boolean | null>(`${DataUrls.saveCustomer}`, customer, () => {
-                setTimeout(() => setShowCustomerSaving(false), 1000)
+                setTimeout(() => setShowSaving(false), 1000)
             })
         }
     }
 
-    const saveOpportunity = () => {
-        if (modifiedOpportunityName) {
-            setShowCustomerSavingOpportunity(true)
-
-            // todo-at: is this the best to convert a `string | null` to a `string`?
-            let dataUrl = `${DataUrls.saveSalesOpportunity(`${customer.customerId}`)}`
-            const opportunity = new SalesOpportunity(modifiedOpportunityId, modifiedOpportunityStatus, modifiedOpportunityName)
-
-            // todo-at: use boolean return
-            postJson<boolean | null>(dataUrl, opportunity, () => {
-                refreshCustomer()
-                setTimeout(() => setShowCustomerSavingOpportunity(false), 1000)
-            })
-        }
-    }
-
-    const refreshCustomer = () => {
-        // todo-at: is this the best to convert a `string | null` to a `string`?
-        fetchJson<Customer>(DataUrls.customer(customer.customerId), (customer) => {
-            setCustomerCopy(customer)
-        })
-    }
-
-    // todo-at: try this shorter version:
-    // <select id="opportunities" onChange={(e) => changeOpportunity(e.target.value)}>
-    // <select id="opportunities" onChange={changeOpportunity>
-    // see here: https://upmostly.com/tutorials/react-onchange-events-with-examples
     return (
-        <tr>
-            <td>
-                <select id="status" onChange={(e) => setModifiedCustomerStatus(e.target.value)}
-                        defaultValue={customer?.status}>
-                    {customerStatuses.map((status) => {
-                        return (
-                            <option key={status} value={status}>{status}</option>
-                        )
-                    })}
-                </select>
-                <button type="button" onClick={() => saveCustomer()}>Save Customer</button>
-                <StatusMessage show={showCustomerSaving} message='Saving...' />
-            </td>
-            <td>
-                <select id="opportunities" onChange={(e) => changeOpportunityId(e.target.value)}>
-                    <option value="">Add Opportunity</option>
-                    {customerCopy?.salesOpportunities?.map((opportunity) => {
-                        return (
-                            <option key={opportunity.salesOpportunityId}
-                                    value={opportunity.salesOpportunityId}>{opportunity.name}</option>
-                        )
-                    })}
-                </select>
-                <select id="status" onChange={(e) => setModifiedOpportunityStatus(e.target.value)}
-                        value={modifiedOpportunityStatus}>
-                    {salesOpportunityStatuses.map((status) => {
-                        return (
-                            <option key={status}
-                                    value={status}>{status}</option>
-                        )
-                    })}
-                </select>
-                <input type="text" value={modifiedOpportunityName}
-                       onChange={(e) => setModifiedOpportunityName(e.target.value)}></input>
-                <button type="button" onClick={() => saveOpportunity()}>Save Opportunity</button>
-                <StatusMessage show={showCustomerSavingOpportunity} message='Saving...' />
-            </td>
-            <td></td>
-        </tr>
+        /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
+        // todo-at: how to complex validation of either `email` or `phoneNumber`?
+        <>
+            <tr>
+                <td colSpan="4">
+                    <form onSubmit={handleSubmit(onSubmit)}>
+                        {errors.name && <div>{errors}</div>}
+                        <input type="hidden"  {...register("customerId")} />
+                        <input {...register("name", {required: true})} />
+                        <input {...register("email")} />
+                        <input {...register("phoneNumber")} />
+                        <select {...register("status")}>
+                            {customerStatuses.map((status) => {
+                                return (
+                                    <option key={status}
+                                            value={status}
+                                    >{status}</option>
+                                )
+                            })}
+                        </select>
+                        <input type="submit" value="Save Customer" />
+                        <StatusMessage show={showSaving} message='Saving...' />
+                    </form>
+                    
+                    <select {...register("opportunities")}>
+                        <option key="add" value="">Add Opportunity</option>
+                        {customer.salesOpportunities?.map((opportunity) => {
+                            return (
+                                <option key={opportunity.salesOpportunityId}
+                                    value={opportunity.salesOpportunityId}
+                                >{opportunity.name}</option>
+                            )
+                        })}
+                    </select>
+                    <SalesOpportunityEdit customerId={customer.customerId}
+                                          opportunity={[]}
+                                          statuses={opportunityStatuses} />
+                </td>
+            </tr>
+        </>
     )
 }

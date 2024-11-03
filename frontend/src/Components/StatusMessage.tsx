@@ -8,6 +8,7 @@ class StatusMessageData {
     }
 }
 
+// todo-at: should this have a show and hide or toggle method?
 export default function StatusMessage({ show, message }: StatusMessageData) {
     return (
         <>
