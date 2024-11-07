@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { fetchJson } from '../Library/FetchHelper'
 import DataUrls from '../Library/DataUrls'
 import CustomerView from './CustomerView'
@@ -85,52 +85,57 @@ export default function CustomersList() {
         setShowDetails(showDetails)
     }
 
+    
+    const refreshCustomer = (customerId: string) => {
+        // todo-at: refresh only one customer
+        refreshCustomers()
+    }
+
+    //const table = table as HTMLTableElement
     return (
-        <>
-            <table className="styled-table">
-                <thead>
-                <tr>
-                    <td>
-                        <div onClick={() => toggleNameSort()}>Name</div>
-                        <div><input id="filterName" type="text" onChange={(e) => setNameFilter(e.target.value)} /></div>
-                    </td>
-                    <td>
-                        <div onClick={() => toggleStatusSort()}>Status</div>
-                        <div>
-                            <select id="filterStatus" onChange={(e) => setStatusFilter(e.target.value)}>
-                                {customerStatuses.map((status) => {
-                                    return (
-                                        <option key={status}>{status}</option>
-                                    )
-                                })}
-                            </select>
-                        </div>
-                    </td>
-                    <td>
-                        <button type="button" onClick={() => clearSort()}>Clear Sort</button>
-                        <button type="button" onClick={() => refreshCustomers()}>Filter</button>
-                    </td>
-                </tr>
-                </thead>
-                <tbody>
-                {customers.map((customer: Customer) => {
-                    return (
-                        <>
-                            <tr key={customer.customerId} onClick={() => toggleShowDetails(customer.customerId)}>
-                                <CustomerView key={customer.customerId} customer={customer} />
-                            </tr>
-                            {showDetails[customer.customerId]
-                                ? <CustomerEdit key={customer.customerId}
-                                                customer={customer}
-                                                customerStatuses={customerStatuses}
-                                                opportunityStatuses={salesOpportunityStatuses} />
-                                : null
-                            }
-                        </>
-                    )
-                })}
-                </tbody>
-            </table>
-        </>
+        <table className="styled-table">
+            <thead>
+            <tr>
+                <td>
+                    <div onClick={() => toggleNameSort()}>Name</div>
+                    <div><input id="filterName" type="text" onChange={(e) => setNameFilter(e.target.value)} /></div>
+                </td>
+                <td>
+                    <div onClick={() => toggleStatusSort()}>Status</div>
+                    <div>
+                        <select id="filterStatus" onChange={(e) => setStatusFilter(e.target.value)}>
+                            {customerStatuses.map((status) => {
+                                return (
+                                    <option key={status}>{status}</option>
+                                )
+                            })}
+                        </select>
+                    </div>
+                </td>
+                <td>
+                    <button type="button" onClick={() => clearSort()}>Clear Sort</button>
+                    <button type="button" onClick={() => refreshCustomers()}>Filter</button>
+                </td>
+            </tr>
+            </thead>
+            <tbody>
+            {customers.map((customer: Customer) => {
+                return (
+                    <Fragment key={customer.customerId}>
+                        <tr
+                            onClick={() => toggleShowDetails(customer.customerId)}>
+                            <CustomerView key={customer.customerId} customer={customer}/>
+                        </tr>
+                        {showDetails[customer.customerId] &&
+                            <CustomerEdit key={customer.customerId}
+                                          customer={customer}
+                                          onSaved={() => refreshCustomer(customer.customerId)}
+                                          customerStatuses={customerStatuses}
+                                          opportunityStatuses={salesOpportunityStatuses}/>}
+                    </Fragment>
+                )
+            })}
+            </tbody>
+        </table>
     )
 }

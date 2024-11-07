@@ -8,46 +8,56 @@ import SalesOpportunityEdit from "./SalesOpportunityEdit";
 import { useForm, SubmitHandler } from 'react-hook-form'
 
 type EditInputs = {
-    customerId: string
     name: string
     email: string
     phoneNumber: string
     status: string
-    opportunities: SalesOpportunity[]
+    //opportunities: SalesOpportunity[]
 }
 
-class EditData {
+type CustomerEditProps = {
     customer: Customer
     customerStatuses: string[]
     opportunityStatuses: string[]
-    
-    constructor(customer: Customer) {
-        this.customer = customer
-        this.customerStatuses = []
-        this.opportunityStatuses = []
-    }
+    onSaved: (customerId: string) => {}
 }
 
-export default function CustomerEdit({ customer, customerStatuses, opportunityStatuses }: EditData) {
+export default function CustomerEdit(
+    {
+        customer, 
+        customerStatuses, 
+        opportunityStatuses,
+        onSaved
+    }: CustomerEditProps) {
+    const customerId = customer?.customerId ?? ''
+
     const {
         register,
         handleSubmit,
         watch,
-        formState: {errors},
+        formState: { errors },
     } = useForm<EditInputs>({
         defaultValues: {
-            customerId: customer.customerId,
             name: customer.name,
             email: customer.email,
             phoneNumber: customer.phoneNumber,
             status: customer.status,
-            opportunities: customer.salesOpportunities
+            //opportunities: customer.salesOpportunities
         }
     })
-    const watchOpportunity = watch('opportunities')
 
-    const onSubmit: SubmitHandler<EditInputs> =
+    const selectedOpportunity = () => {
+        const selectedOpportunityId = watch('selectedOpportunityId')
+        if (selectedOpportunityId) {
+            //const opportunities = watch('opportunities') as SalesOpportunity[]
+            return customer.salesOpportunities?.find(opportunity =>
+                opportunity.salesOpportunityId === selectedOpportunityId)
+        }
+    }
+
+    const onSubmit: SubmitHandler<Customer> =
         (inputData: Customer) => {
+            inputData.customerId = customerId
             saveCustomer(inputData)
         }
 
@@ -66,43 +76,41 @@ export default function CustomerEdit({ customer, customerStatuses, opportunitySt
     return (
         /* "handleSubmit" will validate your inputs before invoking "onSubmit" */
         // todo-at: how to complex validation of either `email` or `phoneNumber`?
-        <>
-            <tr>
-                <td colSpan="4">
-                    <form onSubmit={handleSubmit(onSubmit)}>
-                        {errors.name && <div>{errors}</div>}
-                        <input type="hidden"  {...register("customerId")} />
-                        <input {...register("name", {required: true})} />
-                        <input {...register("email")} />
-                        <input {...register("phoneNumber")} />
-                        <select {...register("status")}>
-                            {customerStatuses.map((status) => {
-                                return (
-                                    <option key={status}
-                                            value={status}
-                                    >{status}</option>
-                                )
-                            })}
-                        </select>
-                        <input type="submit" value="Save Customer" />
-                        <StatusMessage show={showSaving} message='Saving...' />
-                    </form>
-                    
-                    <select {...register("opportunities")}>
-                        <option key="add" value="">Add Opportunity</option>
-                        {customer.salesOpportunities?.map((opportunity) => {
+        <tr>
+            <td colSpan="3">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    {errors.name && <div>{errors}</div>}
+                    <input {...register("name", {required: true})} />
+                    <input {...register("email")} />
+                    <input {...register("phoneNumber")} />
+                    <select {...register("status")}>
+                        {customerStatuses.map((status) => {
                             return (
-                                <option key={opportunity.salesOpportunityId}
-                                    value={opportunity.salesOpportunityId}
-                                >{opportunity.name}</option>
+                                <option key={`customer-${status}`}
+                                        value={status}
+                                >{status}</option>
                             )
                         })}
                     </select>
-                    <SalesOpportunityEdit customerId={customer.customerId}
-                                          opportunity={[]}
-                                          statuses={opportunityStatuses} />
-                </td>
-            </tr>
-        </>
+                    <input type="submit" value="Save Customer"/>
+                    <StatusMessage show={showSaving} message='Saving...'/>
+                </form>
+
+                <select {...register("selectedOpportunityId")}>
+                    <option key="add" value="">Add Opportunity</option>
+                    {customer.salesOpportunities?.map((opportunity) => {
+                        return (
+                            <option key={opportunity.salesOpportunityId}
+                                    value={opportunity.salesOpportunityId}
+                            >{opportunity.name}</option>
+                        )
+                    })}
+                </select>
+                <SalesOpportunityEdit customerId={customer.customerId}
+                                      salesOpportunity={selectedOpportunity()}
+                                      onSaved={() => onSaved(customerId)}
+                                      statuses={opportunityStatuses}/>
+            </td>
+        </tr>
     )
 }

@@ -54,9 +54,16 @@ namespace Api.Models
 
         public bool? SaveCustomer(Customer customer)
         {
+            // todo-at: does this save method and the below sales opportunity save method share the same code? extract a method?
             ValidationResult? validation = new CustomerValidator().Validate(customer);
             if (validation == null) throw new FluentValidation.ValidationException("Validation unavailable");
             if (!validation.IsValid) throw new FluentValidation.ValidationException(string.Join(' ', validation.Errors));
+
+            Customer? existingCustomer = RetrieveCustomer(customer.CustomerId);
+            if (existingCustomer != null)
+            {
+                customer.SalesOpportunities = existingCustomer.SalesOpportunities;
+            }
             
             return _customersDataProvider.StoreCustomer(customer);
         }
@@ -67,15 +74,15 @@ namespace Api.Models
             if (validation == null) throw new FluentValidation.ValidationException("Validation unavailable");
             if (!validation.IsValid) throw new FluentValidation.ValidationException(string.Join(' ', validation.Errors));
         
-            Customer? customer = RetrieveCustomer(customerId);
-            if (customer == null) throw new NullReferenceException($"Customer not found: '{customerId}'");
+            Customer? existingCustomer = RetrieveCustomer(customerId);
+            if (existingCustomer == null) throw new NullReferenceException($"Customer not found: '{customerId}'");
 
-            SalesOpportunity? existingOpportunity = customer.SalesOpportunities?.FirstOrDefault(x =>
+            SalesOpportunity? existingOpportunity = existingCustomer.SalesOpportunities?.FirstOrDefault(x =>
                 x.SalesOpportunityId == salesOpportunity.SalesOpportunityId);
             if (existingOpportunity == null)
             {
-                customer.SalesOpportunities ??= new List<SalesOpportunity>();
-                customer.SalesOpportunities.Add(salesOpportunity);
+                existingCustomer.SalesOpportunities ??= new List<SalesOpportunity>();
+                existingCustomer.SalesOpportunities.Add(salesOpportunity);
             }
             else
             {
@@ -83,7 +90,7 @@ namespace Api.Models
                 existingOpportunity.Name = salesOpportunity.Name;
             }
 
-            _customersDataProvider.StoreCustomer(customer);
+            _customersDataProvider.StoreCustomer(existingCustomer);
 
             return true;
         }

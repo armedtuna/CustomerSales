@@ -1,14 +1,11 @@
+//import * as React from 'react'
 import Customer from '../Entities/Customer'
 
-class CustomerViewData {
+type CustomerViewProps = {
     customer: Customer
-    
-    constructor(customer: Customer) {
-        this.customer = customer
-    }
 }
 
-export default function CustomerView({ customer }: CustomerViewData) {
+export default function CustomerView({ customer }: CustomerViewProps) {
     return (
         <>
             <td>{customer.name}</td>
