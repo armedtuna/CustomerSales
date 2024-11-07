@@ -31,21 +31,20 @@ export default function SalesOpportunityEdit(
     const {
         register,
         handleSubmit,
+        setValue,
         formState: { errors },
-    } = useForm<EditInputs>({
-        defaultValues: {
-            status: salesOpportunity?.status,
-            name: salesOpportunity?.name,
-        }
-    })
+    } = useForm<EditInputs>()
+    
+    // todo-at: need to select an item that's actually on the list?
+    // - or add a blank item to status drop down?
+    setValue('status', salesOpportunity?.status)
+    setValue('name', salesOpportunity?.name)
 
     const onSubmit: SubmitHandler<EditInputs> =
         (inputData: SalesOpportunity) => {
             inputData.salesOpportunityId = salesOpportunityId
             saveOpportunity(inputData)
         }
-
-    //console.log(watch("status"))
 
     const [showSaving, setShowSaving] = useState(false)
 

@@ -12,7 +12,6 @@ type EditInputs = {
     email: string
     phoneNumber: string
     status: string
-    //opportunities: SalesOpportunity[]
 }
 
 type CustomerEditProps = {
@@ -42,14 +41,12 @@ export default function CustomerEdit(
             email: customer.email,
             phoneNumber: customer.phoneNumber,
             status: customer.status,
-            //opportunities: customer.salesOpportunities
         }
     })
 
     const selectedOpportunity = () => {
         const selectedOpportunityId = watch('selectedOpportunityId')
         if (selectedOpportunityId) {
-            //const opportunities = watch('opportunities') as SalesOpportunity[]
             return customer.salesOpportunities?.find(opportunity =>
                 opportunity.salesOpportunityId === selectedOpportunityId)
         }

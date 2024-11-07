@@ -29,6 +29,7 @@ export default function CustomersList() {
     }, [])
 
     const refreshCustomers = () => {
+        // todo-at: extract method for building url?
         let dataUrl = `${DataUrls.customers}?`
         if (`${nameFilter}`) {
             dataUrl += `&filterName=${nameFilter}`
@@ -86,8 +87,18 @@ export default function CustomersList() {
     }
     
     const refreshCustomer = (customerId: string) => {
-        // todo-at: refresh only one customer
-        refreshCustomers()
+        // todo-at: need a loading status message
+        // todo-at: make customers a dictionary?
+        let listCustomerIndex = customers.findIndex((customer) =>
+            customer.customerId === customerId)
+        if (listCustomerIndex) {
+            fetchJson<Customer>(DataUrls.customer(customerId), (customer) => {
+                customers[listCustomerIndex] = customer
+                setCustomers(customers)
+            })
+        } else {
+            refreshCustomers()
+        }
     }
 
     //const table = table as HTMLTableElement

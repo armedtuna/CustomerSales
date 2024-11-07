@@ -1,4 +1,3 @@
-//import * as React from 'react'
 import Customer from '../Entities/Customer'
 
 type CustomerViewProps = {
