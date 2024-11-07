@@ -84,7 +84,6 @@ export default function CustomersList() {
         showDetails[customerId] = !showDetails[customerId]
         setShowDetails(showDetails)
     }
-
     
     const refreshCustomer = (customerId: string) => {
         // todo-at: refresh only one customer

@@ -3,8 +3,21 @@ namespace Api.Entities
     public record SalesOpportunity
     {
         private SalesOpportunityStatusEnum _status;
-        
-        public Guid SalesOpportunityId { get; set; }
+        private Guid _salesOpportunityId;
+
+        public string SalesOpportunityId
+        {
+            get => _salesOpportunityId.ToString();
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    return;
+                }
+
+                _salesOpportunityId = Guid.Parse(value);
+            }
+        }
 
         public string Status
         {
@@ -15,7 +28,7 @@ namespace Api.Entities
 
         public SalesOpportunity()
         {
-            SalesOpportunityId = Guid.NewGuid();
+            _salesOpportunityId = Guid.NewGuid();
             _status = SalesOpportunityStatusEnum.Unknown;
             Name = string.Empty;
         }
