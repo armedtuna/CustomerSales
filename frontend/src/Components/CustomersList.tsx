@@ -4,6 +4,7 @@ import DataUrls from '../Library/DataUrls'
 import CustomerView from './CustomerView'
 import CustomerEdit from './CustomerEdit'
 import Customer from "../Entities/Customer";
+import StatusMessage from '../Components/StatusMessage'
 
 // todo-at: set up docker container 
 export default function CustomersList() {
@@ -18,6 +19,7 @@ export default function CustomersList() {
     const [statusFilter, setStatusFilter] = useState('')
     const [showDetails, setShowDetails] = useState<IShowDetailsDictionary>({})
     const [simpleShowDetails, setSimpleShowDetails] = useState(false)
+    const [showLoading, setShowLoading] = useState(false)
     useEffect(() => {
         fetchJson<string[]>(DataUrls.customerStatuses, (statuses) => {
             setCustomerStatuses(statuses)
@@ -29,6 +31,8 @@ export default function CustomersList() {
     }, [])
 
     const refreshCustomers = () => {
+        setShowLoading(true)
+        
         // todo-at: extract method for building url?
         let dataUrl = `${DataUrls.customers}?`
         if (`${nameFilter}`) {
@@ -49,6 +53,7 @@ export default function CustomersList() {
 
         fetchJson<Customer[]>(dataUrl, (customers) => {
             setCustomers(customers)
+            setTimeout(() => setShowLoading(false), 1000)
         })
     }
 
@@ -103,49 +108,52 @@ export default function CustomersList() {
 
     //const table = table as HTMLTableElement
     return (
-        <table className="styled-table">
-            <thead>
-            <tr>
-                <td>
-                    <div onClick={() => toggleNameSort()}>Name</div>
-                    <div><input id="filterName" type="text" onChange={(e) => setNameFilter(e.target.value)} /></div>
-                </td>
-                <td>
-                    <div onClick={() => toggleStatusSort()}>Status</div>
-                    <div>
-                        <select id="filterStatus" onChange={(e) => setStatusFilter(e.target.value)}>
-                            {customerStatuses.map((status) => {
-                                return (
-                                    <option key={status}>{status}</option>
-                                )
-                            })}
-                        </select>
-                    </div>
-                </td>
-                <td>
-                    <button type="button" onClick={() => clearSort()}>Clear Sort</button>
-                    <button type="button" onClick={() => refreshCustomers()}>Filter</button>
-                </td>
-            </tr>
-            </thead>
-            <tbody>
-            {customers.map((customer: Customer) => {
-                return (
-                    <Fragment key={customer.customerId}>
-                        <tr
-                            onClick={() => toggleShowDetails(customer.customerId)}>
-                            <CustomerView key={customer.customerId} customer={customer}/>
-                        </tr>
-                        {showDetails[customer.customerId] &&
-                            <CustomerEdit key={customer.customerId}
-                                          customer={customer}
-                                          onSaved={() => refreshCustomer(customer.customerId)}
-                                          customerStatuses={customerStatuses}
-                                          opportunityStatuses={salesOpportunityStatuses}/>}
-                    </Fragment>
-                )
-            })}
-            </tbody>
-        </table>
+        <>
+            <StatusMessage show={showLoading} message='Loading...'/>
+            <table className="styled-table">
+                <thead>
+                <tr>
+                    <td>
+                        <div onClick={() => toggleNameSort()}>Name</div>
+                        <div><input id="filterName" type="text" onChange={(e) => setNameFilter(e.target.value)} /></div>
+                    </td>
+                    <td>
+                        <div onClick={() => toggleStatusSort()}>Status</div>
+                        <div>
+                            <select id="filterStatus" onChange={(e) => setStatusFilter(e.target.value)}>
+                                {customerStatuses.map((status) => {
+                                    return (
+                                        <option key={status}>{status}</option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                    </td>
+                    <td>
+                        <button type="button" onClick={() => clearSort()}>Clear Sort</button>
+                        <button type="button" onClick={() => refreshCustomers()}>Filter</button>
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                {customers.map((customer: Customer) => {
+                    return (
+                        <Fragment key={customer.customerId}>
+                            <tr
+                                onClick={() => toggleShowDetails(customer.customerId)}>
+                                <CustomerView key={customer.customerId} customer={customer}/>
+                            </tr>
+                            {showDetails[customer.customerId] &&
+                                <CustomerEdit key={customer.customerId}
+                                              customer={customer}
+                                              onSaved={() => refreshCustomer(customer.customerId)}
+                                              customerStatuses={customerStatuses}
+                                              opportunityStatuses={salesOpportunityStatuses}/>}
+                        </Fragment>
+                    )
+                })}
+                </tbody>
+            </table>
+        </>
     )
 }
