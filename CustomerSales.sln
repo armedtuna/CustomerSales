@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "backend", "backend", "{BF3DD159-C454-454F-BD9F-8135408196D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "API", "backend\src\API.csproj", "{A1FB18F9-DDA4-434B-AFF5-9696F5222A77}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "backend\test\Tests.csproj", "{C4B24B01-A74E-4871-AF8B-CC75E5FEF02E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{609A679E-7736-44FA-B344-7C432C2EC040}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "frontend", "frontend", "{B9D9A4C7-529C-4DA4-9CBC-A76768622A83}"
+	ProjectSection(SolutionItems) = preProject
+		frontend\README.md = frontend\README.md
+		frontend\public\favicon.ico = frontend\public\favicon.ico
+		frontend\public\index.html = frontend\public\index.html
+		frontend\public\logo512.png = frontend\public\logo512.png
+		frontend\public\manifest.json = frontend\public\manifest.json
+		frontend\public\robots.txt = frontend\public\robots.txt
+		frontend\public\logo192.png = frontend\public\logo192.png
+		frontend\.gitignore = frontend\.gitignore
+		frontend\package-lock.json = frontend\package-lock.json
+		frontend\package.json = frontend\package.json
+		frontend\tsconfig.json = frontend\tsconfig.json
+		frontend\src\index.tsx = frontend\src\index.tsx
+		frontend\src\App.tsx = frontend\src\App.tsx
+		frontend\src\App.test.tsx = frontend\src\App.test.tsx
+		frontend\src\App.css = frontend\src\App.css
+		frontend\src\Library\FetchHelper.ts = frontend\src\Library\FetchHelper.ts
+		frontend\src\Library\DataUrls.ts = frontend\src\Library\DataUrls.ts
+		frontend\src\index.css = frontend\src\index.css
+		frontend\src\setupTests.ts = frontend\src\setupTests.ts
+		frontend\src\reportWebVitals.ts = frontend\src\reportWebVitals.ts
+		frontend\src\Components\SalesOpportunityEdit.tsx = frontend\src\Components\SalesOpportunityEdit.tsx
+		frontend\src\Components\CustomersList.tsx = frontend\src\Components\CustomersList.tsx
+		frontend\src\Components\CustomerView.tsx = frontend\src\Components\CustomerView.tsx
+		frontend\src\Components\StatusMessage.tsx = frontend\src\Components\StatusMessage.tsx
+		frontend\src\Components\CustomerEdit.tsx = frontend\src\Components\CustomerEdit.tsx
+		frontend\src\react-app-env.d.ts = frontend\src\react-app-env.d.ts
+		frontend\src\logo.svg = frontend\src\logo.svg
+		frontend\src\Entities\Customer.ts = frontend\src\Entities\Customer.ts
+		frontend\src\Entities\SalesOpportunity.ts = frontend\src\Entities\SalesOpportunity.ts
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A1FB18F9-DDA4-434B-AFF5-9696F5222A77} = {BF3DD159-C454-454F-BD9F-8135408196D6}
+		{C4B24B01-A74E-4871-AF8B-CC75E5FEF02E} = {BF3DD159-C454-454F-BD9F-8135408196D6}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1FB18F9-DDA4-434B-AFF5-9696F5222A77}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1FB18F9-DDA4-434B-AFF5-9696F5222A77}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1FB18F9-DDA4-434B-AFF5-9696F5222A77}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1FB18F9-DDA4-434B-AFF5-9696F5222A77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4B24B01-A74E-4871-AF8B-CC75E5FEF02E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4B24B01-A74E-4871-AF8B-CC75E5FEF02E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4B24B01-A74E-4871-AF8B-CC75E5FEF02E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4B24B01-A74E-4871-AF8B-CC75E5FEF02E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
