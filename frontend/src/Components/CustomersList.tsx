@@ -38,24 +38,22 @@ export default function CustomersList() {
                 setTimeout(() => setShowLoading(false), 1000)
         })
     }
+    
+    const toggleSort = (sortField: string) => {
+        const descendingSortString = 'desc'
+        const ascendingSortString = 'asc'
+        return sortField === descendingSortString
+            ? ascendingSortString
+            : descendingSortString;
+    }
 
     const toggleNameSort = () => {
-        if (`${nameSort}` === 'desc') {
-            setNameSort('asc')
-        } else {
-            setNameSort('desc')
-        }
-
+        setNameSort(toggleSort(nameSort))
         return refreshCustomers()
     }
 
     const toggleStatusSort = () => {
-        if (`${statusSort}` === 'desc') {
-            setStatusSort('asc')
-        } else {
-            setStatusSort('desc')
-        }
-
+        setStatusSort(toggleSort(statusSort))
         return refreshCustomers()
     }
 
