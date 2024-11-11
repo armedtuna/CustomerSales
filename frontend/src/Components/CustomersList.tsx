@@ -32,28 +32,10 @@ export default function CustomersList() {
 
     const refreshCustomers = () => {
         setShowLoading(true)
-        
-        // todo-at: extract method for building url?
-        let dataUrl = `${DataUrls.customers}?`
-        if (`${nameFilter}`) {
-            dataUrl += `&filterName=${nameFilter}`
-        }
-
-        if (`${statusFilter}`) {
-            dataUrl += `&filterStatus=${statusFilter}`
-        }
-
-        if (`${nameSort}`) {
-            dataUrl += `&sortName=${nameSort}`
-        }
-
-        if (`${statusSort}`) {
-            dataUrl += `&sortStatus=${statusSort}`
-        }
-
-        fetchJson<Customer[]>(dataUrl, (customers) => {
-            setCustomers(customers)
-            setTimeout(() => setShowLoading(false), 1000)
+        fetchJson<Customer[]>(DataUrls.customers(nameFilter, statusFilter, nameSort, statusSort),
+            (customers) => {
+                setCustomers(customers)
+                setTimeout(() => setShowLoading(false), 1000)
         })
     }
 
