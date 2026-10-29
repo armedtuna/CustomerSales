@@ -2,6 +2,7 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
+// todo-at: no linting since moving from create react app. add eslint?
 export default defineConfig({
     plugins: [react()],
     server: {
