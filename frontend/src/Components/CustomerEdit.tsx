@@ -17,6 +17,7 @@ type CustomerEditProps = {
     customer: Customer
     customerStatuses: string[]
     opportunityStatuses: string[]
+    // todo-at: should return void, not {} (causes a type error where CustomersList passes onSaved)
     onSaved: (customerId: string) => {}
 }
 
@@ -29,6 +30,8 @@ export default function CustomerEdit(
     }: CustomerEditProps) {
     const customerId = customer?.customerId ?? ''
 
+    // todo-at: fix type errors shown by "npm run typecheck", for example selectedOpportunityId isn't in EditInputs,
+    //  null vs undefined default values, and errors being rendered directly
     const {
         register,
         handleSubmit,
