@@ -1,3 +1,5 @@
+// todo-at: method to call and return multiple requests? 
+
 export function fetchJson<ReturnType>(url: string, onFetched: (data: ReturnType) => void) {
     fetch(url /*, {
         method: 'GET',

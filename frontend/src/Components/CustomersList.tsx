@@ -21,14 +21,35 @@ export default function CustomersList() {
     const [simpleShowDetails, setSimpleShowDetails] = useState(false)
     const [showLoading, setShowLoading] = useState(false)
     useEffect(() => {
+        fetchStartData()
+    }, [])
+    
+    // todo-at: loading can hide early, since refreshCustomers hides it on its own timer, and done() doesn't wait for customers
+    const fetchStartData = () => {
+        setShowLoading(true)
+        let loadedCustomerStatuses = false
+        let loadedSalesOpportunityStatuses = false
+
         fetchJson<string[]>(DataUrls.customerStatuses, (statuses) => {
             setCustomerStatuses(statuses)
+            loadedCustomerStatuses = true
+            done()
         })
         fetchJson<string[]>(DataUrls.salesOpportunityStatuses, (statuses) => {
             setSalesOpportunityStatuses(statuses)
+            loadedSalesOpportunityStatuses = true
+            done()
         })
         refreshCustomers()
-    }, [])
+        // todo-at: this call does nothing, since neither flag is set yet
+        done()
+
+        function done() {
+            if (loadedCustomerStatuses && loadedSalesOpportunityStatuses) {
+                setTimeout(() => setShowLoading(false), 1000)
+            }
+        }
+    }
 
     const refreshCustomers = () => {
         setShowLoading(true)
