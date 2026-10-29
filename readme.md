@@ -4,6 +4,17 @@ Note that this is my first React project, and I might be not aware of best pract
 
 # Getting Started
 
+## Running
+
+Both the backend and frontend need to be running, each in its own terminal:
+
+- Backend: in `backend/src` run `dotnet run --launch-profile http`
+  - Runs on `http://localhost:5056`, with the Swagger at `/swagger`.
+- Frontend: in `frontend` run `npm start` (run `npm install` first, if `node_modules` is missing)
+  - Runs on `http://localhost:3000`, which is the URL to open in a Web browser.
+
+The ports matter: the frontend expects the backend at `localhost:5056` (see `DataUrls.ts`), and the backend CORS only allows `localhost:3000`.
+
 ## Entities
 
 In short: a list of **Clients** with zero or more **Sales Opportunities**.
