@@ -67,6 +67,7 @@ public class CustomersDataProvider : ICustomersDataProvider
 
     // todo-at: extract to new class?
     // todo-at: tests for new class?
+    // todo-at: with both sorts, status always wins since the second OrderBy re-sorts everything. use ThenBy, in the user's click order?
     private static Customer[] SortCustomers(Customer[] customers, Dictionary<string, string> sortFields)
     {
         foreach (KeyValuePair<string, string> sortField in sortFields)
