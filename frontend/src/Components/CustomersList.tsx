@@ -47,6 +47,8 @@ export default function CustomersList() {
             : descendingSortString;
     }
 
+    // todo-at: sort is one click behind, since refreshCustomers still sees the old state value
+    //  (also affects clearSort, needing two presses). maybe a useEffect on [nameSort, statusSort]?
     const toggleNameSort = () => {
         setNameSort(toggleSort(nameSort))
         return refreshCustomers()
